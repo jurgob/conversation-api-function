@@ -26,7 +26,7 @@ function createApp(config) {
 
   const nccoHandler = (req, res) => {
     const { server_url } = config;
-    const { to = 'unknown', from = 'unknown'} = req.query;
+    const { to = 'unknown', from = 'unknown', dtmf = -1 } = req.query;
 
     const ncco = [
       {
@@ -47,20 +47,17 @@ function createApp(config) {
 
 
 function localDevSetup({ config }) {
+  const { port, application_id, nexmo_account,isDev } = config;
+
+  if(!isDev)
+  return Promise.resolve({
+    config
+  });
 
   const ngrok = require('ngrok');
-
-  dotenv.config();
-
-  const { port, application_id } = config;
-  const { MY_NEXMO_APP_API_KEY, MY_NEXMO_APP_API_SECRET } = process.env
-  const dev_api_token = new Buffer(`${MY_NEXMO_APP_API_KEY}:${MY_NEXMO_APP_API_SECRET}`).toString('base64')
-
   let NGROK_URL;
-  /*return Promise.resolve({
-    config
-  });*/
-
+  const {api_key, api_secret } = nexmo_account;
+  const dev_api_token = new Buffer(`${api_key}:${api_secret}`).toString('base64')
   return ngrok.connect(port)
     .then((ngrok_url) => {
       NGROK_URL = ngrok_url;
@@ -146,16 +143,32 @@ function generateBEToken({ config }) {
 }
 
 function getStaticConfig(env) {
+  const isDev = !env.NODE_ENV
   const { MY_NEXMO_APP_PRIVATE_KEY, MY_NEXMO_APP_APPLICATION_ID, MY_NEXMO_APP_PHONE_NUMBER } = env
   const port = 5000
-  return {
+
+  let config = {
     port,
+    isDev,
     phone_number: MY_NEXMO_APP_PHONE_NUMBER,
     server_url_internal: `http://localhost:${port}`,
     server_url: `http://localhost:${port}`,
     private_key: MY_NEXMO_APP_PRIVATE_KEY,
     application_id: MY_NEXMO_APP_APPLICATION_ID
   }
+  if(isDev) {
+      const { MY_NEXMO_APP_API_KEY, MY_NEXMO_APP_API_SECRET } = env
+      config = {
+        ...config,
+        nexmo_account: {
+          api_key:MY_NEXMO_APP_API_KEY,
+          api_secret: MY_NEXMO_APP_API_SECRET
+        }
+      }
+  }
+
+
+  return config
 }
 
 function listenServer({ app, config }) {
