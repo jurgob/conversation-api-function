@@ -142,8 +142,36 @@ function generateBEToken({ config }) {
   })
 }
 
+function checkEnvVars(){
+  const isDev = !process.env.NODE_ENV
+  if(isDev)
+    dotenv.config();
+
+  let mandatoryEnvs = ["MY_NEXMO_APP_PRIVATE_KEY", "MY_NEXMO_APP_APPLICATION_ID", "MY_NEXMO_APP_API_KEY"]
+  if(isDev)
+    mandatoryEnvs = mandatoryEnvs.concat(["MY_NEXMO_APP_API_KEY", "MY_NEXMO_APP_API_SECRET"])
+
+
+  const getEmpty = (acc, cur) => {
+    if(!process.env[cur]) {
+      return [...acc, cur]
+    } else {
+      return acc
+    }
+  }
+  const emptyEnvs = mandatoryEnvs
+  .reduce(getEmpty, [])
+
+
+  return emptyEnvs
+
+
+}
+
 function getStaticConfig(env) {
   const isDev = !env.NODE_ENV
+  if(isDev)
+    dotenv.config();
   const { MY_NEXMO_APP_PRIVATE_KEY, MY_NEXMO_APP_APPLICATION_ID, MY_NEXMO_APP_PHONE_NUMBER } = env
   const port = 5000
 
@@ -197,5 +225,9 @@ function startServer() {
     })
 }
 
-startServer()
-  .catch(err => console.error(err))
+const  emptyEnvs = checkEnvVars();
+if(emptyEnvs.length)
+  logger.error(`you need to configure the following vars`, emptyEnvs)
+else
+  startServer()
+    .catch(err => console.error(err))
