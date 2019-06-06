@@ -35,3 +35,16 @@ run
 
 ## how should I use it?
 Once your server is running, just call from your phone the LVN number you bougth from nexmo
+
+## the first exercise you should do:
+Take the current app and ask the question: 
+"What do you prefer, fish and chips or potato?"
+"If you prefer fish and chips press 1, of you prefer potatos is 2"
+
+if the user press one it should hear:
+"you have selected fish and chips, you should drink it with beer"
+
+if the user press two it should hear:
+"glad you selected potatos, have a coke with them"
+
+
