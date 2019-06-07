@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken');
 const axios = require('axios');
 const logger = bunyan.createLogger({ name: 'myapp' });
 const path = require('path');
+const { base64encode } = require('nodejs-base64');
 
 const bodyParser = require('body-parser');
 
@@ -57,7 +58,7 @@ function localDevSetup({ config }) {
   const ngrok = require('ngrok');
   let NGROK_URL;
   const {api_key, api_secret } = nexmo_account;
-  const dev_api_token = new Buffer(`${api_key}:${api_secret}`).toString('base64')
+  const dev_api_token = base64encode(`${api_key}:${api_secret}`)
   return ngrok.connect(port)
     .then((ngrok_url) => {
       NGROK_URL = ngrok_url;
