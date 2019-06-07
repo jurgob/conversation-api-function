@@ -47,7 +47,7 @@ function createApp(config) {
 
 
 function localDevSetup({ config }) {
-  const { port, application_id, nexmo_account,isDev } = config;
+  const { port, application_id, application_name, nexmo_account,isDev } = config;
 
   if(!isDev)
   return Promise.resolve({
@@ -65,7 +65,7 @@ function localDevSetup({ config }) {
         method: "PUT",
         url: `https://api.nexmo.com/v2/applications/${application_id}`,
         data: {
-          "name": "ivr-state-test",
+          "name": application_name,
           "capabilities": {
             "voice": {
               "webhooks": {
@@ -147,7 +147,7 @@ function checkEnvVars(){
   if(isDev)
     dotenv.config();
 
-  let mandatoryEnvs = ["MY_NEXMO_APP_PRIVATE_KEY", "MY_NEXMO_APP_APPLICATION_ID", "MY_NEXMO_APP_API_KEY"]
+  let mandatoryEnvs = ["MY_NEXMO_APP_PRIVATE_KEY", "MY_NEXMO_APP_APPLICATION_ID", "MY_NEXMO_APP_APPLICATION_NAME", "MY_NEXMO_APP_API_KEY"]
   if(isDev)
     mandatoryEnvs = mandatoryEnvs.concat(["MY_NEXMO_APP_API_KEY", "MY_NEXMO_APP_API_SECRET"])
 
@@ -172,7 +172,7 @@ function getStaticConfig(env) {
   const isDev = !env.NODE_ENV
   if(isDev)
     dotenv.config();
-  const { MY_NEXMO_APP_PRIVATE_KEY, MY_NEXMO_APP_APPLICATION_ID, MY_NEXMO_APP_PHONE_NUMBER } = env
+  const { MY_NEXMO_APP_PRIVATE_KEY, MY_NEXMO_APP_APPLICATION_ID, MY_NEXMO_APP_APPLICATION_NAME, MY_NEXMO_APP_PHONE_NUMBER } = env
   const port = 5000
 
   let config = {
@@ -182,7 +182,8 @@ function getStaticConfig(env) {
     server_url_internal: `http://localhost:${port}`,
     server_url: `http://localhost:${port}`,
     private_key: MY_NEXMO_APP_PRIVATE_KEY,
-    application_id: MY_NEXMO_APP_APPLICATION_ID
+    application_id: MY_NEXMO_APP_APPLICATION_ID,
+    application_name:MY_NEXMO_APP_APPLICATION_NAME
   }
   if(isDev) {
       const { MY_NEXMO_APP_API_KEY, MY_NEXMO_APP_API_SECRET } = env
