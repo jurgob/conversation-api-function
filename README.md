@@ -6,9 +6,9 @@ this is an hello world for the nexmo voice API https://developer.nexmo.com/voice
 
 ## prerequisites
 To make this app running, you need 
- - a nexmo api key, api secret : https://dashboard.nexmo.com
- - a nexmo Application (for the private_key and application_id ): https://dashboard.nexmo.com/voice/create-application
- - a nexmo lvn: https://dashboard.nexmo.com/buy-numbers
+ - a nexmo api key, api secret ( for MY_NEXMO_APP_API_KEY, MY_NEXMO_APP_API_SECRET ) : https://dashboard.nexmo.com
+ - a nexmo Application (you are gonna put private_key and application_id in MY_NEXMO_APP_PRIVATE_KEY, MY_NEXMO_APP_APPLICATION_ID ): https://dashboard.nexmo.com/voice/create-application
+ - a nexmo lvn (you are gonna put it in MY_NEXMO_APP_PHONE_NUMBER) : https://dashboard.nexmo.com/buy-numbers
  - connect your lvn to your application: https://dashboard.nexmo.com/your-numbers
 
 
