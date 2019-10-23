@@ -27,10 +27,14 @@ MY_NEXMO_APP_PHONE_NUMBER=[LVN]
 install nvm (https://github.com/nvm-sh/nvm)
 from the root directory of this project run:
 `nvm install` (only the first time)
+
 `nvm use`
+
 `npm install`
+
 ## how to run it
 run
+
 `npm start`
 
 
