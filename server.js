@@ -208,12 +208,29 @@ function listenServer({ app, config }) {
   })
 }
 
+//
+function bindLvnToApp({phone_number, application_id, api_key, api_secret}){
+  //`msisdn=${phone_number}&voiceCallbackValue=${application_id}&api_key=${api_key}&api_secret=${api_secret}`
+  const data = `country=GB&msisdn=${phone_number}&moHttpUrl=&voiceCallbackType=app&voiceCallbackValue=${application_id}&api_key=${api_key}&api_secret=${api_secret}`
+  return axios({
+        method: "POST",
+        url: `https://rest.nexmo.com/number/update`,
+        data,
+        headers: { 'Content-Type': `application/x-www-form-urlencoded` }
+      })
+      .then(({ data, status }) => {
+          logger.info({ data, status })
+        })
+}
 
 function startServer() {
   dotenv.config();
   const staticConfig = getStaticConfig(process.env)
-
+  const {phone_number, application_id, nexmo_account} = staticConfig;
+  const {api_key, api_secret} = nexmo_account;
+  console.log(staticConfig)
   return Promise.resolve()
+    .then(() => bindLvnToApp({phone_number, application_id, api_key, api_secret}))
     .then(() => localDevSetup({ config: staticConfig }))
     .then(({ config }) => {
       const app = createApp(config)
