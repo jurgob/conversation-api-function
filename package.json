@@ -19,6 +19,6 @@
     "nodejs-base64": "^1.0.3"
   },
   "devDependencies": {
-    "ngrok": "^3.1.1"
+    "ngrok": "^3.2.5"
   }
 }
