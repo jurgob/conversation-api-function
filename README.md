@@ -7,23 +7,13 @@ this is an hello world for the nexmo voice API https://developer.nexmo.com/voice
 ## prerequisites
 To make this app running, you need 
  - a nexmo api key, api secret ( for MY_NEXMO_APP_API_KEY, MY_NEXMO_APP_API_SECRET ) : https://dashboard.nexmo.com
- - a nexmo Application (you are gonna put private_key and application_id, application_name in MY_NEXMO_APP_PRIVATE_KEY, MY_NEXMO_APP_APPLICATION_ID, MY_NEXMO_APP_APPLICATION_NAME ): https://dashboard.nexmo.com/voice/create-application
- - a nexmo lvn (you are gonna put it in MY_NEXMO_APP_PHONE_NUMBER) : https://dashboard.nexmo.com/buy-numbers
- - connect your lvn to your application: https://dashboard.nexmo.com/your-numbers
+ - a nexmo lvn (you are gonna put it in NEXMO_LVN) : https://dashboard.nexmo.com/buy-numbers
 
 
 once you have the necessary data ,you need to create a `.env` file in the project root directory with the following variables:
-```
-MY_NEXMO_APP_PRIVATE_KEY=[API_KEY]
-MY_NEXMO_APP_APPLICATION_ID=[APPLICATION_ID]
-MY_NEXMO_APP_APPLICATION_NAME=[APPLICATION_NAME]
-MY_NEXMO_APP_API_KEY=[API_KEY]
-MY_NEXMO_APP_API_SECRET=[API_SECRET]
-MY_NEXMO_APP_PHONE_NUMBER=[LVN]
-```
 
 
-## how to install it
+## how to install the dependencies
 install nvm (https://github.com/nvm-sh/nvm)
 from the root directory of this project run:
 `nvm install` (only the first time)
@@ -32,10 +22,41 @@ from the root directory of this project run:
 
 `npm install`
 
+## first run / create the .env config file.
+now you need to configure the .env file. you can run: 
+
+`npm run first_config <API_KEY> <API_SECRET> <NEXMO_LVN> <APP_NAME>`
+where to find those value? 
+ - <API_KEY>, <API_SECRET>: go there https://dashboard.nexmo.com/voice/create-application
+ - NEXMO_LVN:  this is the one you boughth there: https://dashboard.nexmo.com/buy-numbers
+ - APP_NAME: you can put any string you want there
+
+`npm run first_config a508b666 6ea37679e0d6a666 447520660591 vapi_ivr_hello_world`
+
+
+what is this doing? 
+this command is creating a nexmo application for you and saving the needed information in a .env file.
+You should now see a .env file created in your project directory with the following content:
+
+```
+MY_NEXMO_APP_API_KEY=[API_KEY]
+MY_NEXMO_APP_API_SECRET=[API_SECRET]
+MY_NEXMO_APP_PHONE_NUMBER=[NEXMO_VN]
+MY_NEXMO_APP_APPLICATION_NAME=[APP_NAME]
+MY_NEXMO_APP_APPLICATION_ID=[APPLICATION_ID]
+MY_NEXMO_APP_PRIVATE_KEY=[PRIVATE_KEY]
+
+```
+
 ## how to run it
-run
+once everything is configured, you can run the following command:
 
 `npm start`
+
+
+note: 
+this is a dev app, so every time 
+ - connect your lvn to your application: https://dashboard.nexmo.com/your-numbers
 
 
 ## how should I use it?
