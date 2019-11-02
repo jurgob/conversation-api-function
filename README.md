@@ -6,7 +6,7 @@ this is an hello world for the nexmo voice API https://developer.nexmo.com/voice
 
 ## prerequisites
 To make this app running, you need 
- - a nexmo api key, api secret ( for MY_NEXMO_APP_API_KEY, MY_NEXMO_APP_API_SECRET ) : https://dashboard.nexmo.com
+ - a nexmo api key, api secret : https://dashboard.nexmo.com
  - a nexmo lvn (you are gonna put it in NEXMO_LVN) : https://dashboard.nexmo.com/buy-numbers
 
 
@@ -26,9 +26,10 @@ from the root directory of this project run:
 now you need to configure the .env file. you can run: 
 
 `npm run first_config <API_KEY> <API_SECRET> <NEXMO_LVN> <APP_NAME>`
-where to find those value? 
+
+you can find those values here:
  - <API_KEY>, <API_SECRET>: go there https://dashboard.nexmo.com/voice/create-application
- - NEXMO_LVN:  this is the one you boughth there: https://dashboard.nexmo.com/buy-numbers
+ - <NEXMO_LVN>:  this is the one you boughth there: https://dashboard.nexmo.com/buy-numbers
  - APP_NAME: you can put any string you want there
 
 `npm run first_config a508b666 6ea37679e0d6a666 447520660591 vapi_ivr_hello_world`
