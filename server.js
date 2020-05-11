@@ -3,7 +3,14 @@ const dotenv = require('dotenv');
 const bunyan = require('bunyan');
 const jwt = require('jsonwebtoken');
 const axios = require('axios');
-const logger = bunyan.createLogger({ name: 'myapp' });
+const logger = bunyan.createLogger({
+  name: 'vapi_hello_world',
+  streams: [{
+      type: 'rotating-file',
+      path: 'vapi_hello_world.log',
+      period: '1d',   // daily rotation
+  }]
+});
 const path = require('path');
 const { base64encode } = require('nodejs-base64');
 
