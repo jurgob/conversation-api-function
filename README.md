@@ -60,6 +60,19 @@ this is a dev app, so every time
  - connect your lvn to your application: https://dashboard.nexmo.com/your-numbers
 
 
+## how to read the logs
+This project use a logging library called `bunyan` whitch is producing json logs.
+You may struggle in reading row logs. The logs are printed in the starndard output but also written in the `vapi_hello_world.log` file. so my suggestion is: 
+1. install the bunyan cli: `npm install -g bunyan` (you must to this just once)
+2. run the app
+3. open another terminal on the same directory
+4. run `tail -f vapi_hello_world.log | bunyan`. you will now see a formatted log. 
+
+p.s. bunyan is producing standard json, so you can also use standard unix tools like jq to format the logs: `tail -f vapi_hello_world.log | jq`
+
+
+
+
 ## how should I use it?
 Once your server is running, just call from your phone the LVN number you bougth from nexmo
 
