@@ -42,7 +42,7 @@ MY_NEXMO_APP_API_SECRET="${MY_NEXMO_APP_API_SECRET}"
 MY_NEXMO_APP_PHONE_NUMBER="${MY_NEXMO_APP_PHONE_NUMBER}"
 MY_NEXMO_APP_APPLICATION_NAME="${MY_NEXMO_APP_APPLICATION_NAME}"
 MY_NEXMO_APP_APPLICATION_ID="${applicationData.id}"
-MY_NEXMO_APP_PRIVATE_KEY="${applicationData.keys.private_key}"
+MY_NEXMO_APP_PRIVATE_KEY="${applicationData.keys.private_key.split("\n").join('\\n')}"
 `
 	return fs.writeFile(".env", envFileContent)
 

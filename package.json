@@ -6,7 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
-    "first_config": "node ./install/create_env.js"
+    "first_config": "node ./install/create_env.js",
+    "cli_create_user": "node cli_create_user.js $1",
+    "cli_token": "node cli_token.js $1"
   },
   "author": "",
   "license": "ISC",
