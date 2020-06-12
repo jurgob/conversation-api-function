@@ -3,16 +3,10 @@ const dotenv = require('dotenv');
 const bunyan = require('bunyan');
 const jwt = require('jsonwebtoken');
 const axios = require('axios');
-const logger = bunyan.createLogger({
-  name: 'vapi_hello_world',
-  streams: [{
-      type: 'rotating-file',
-      path: 'vapi_hello_world.log',
-      period: '1d',   // daily rotation
-  }]
-});
+const logger = bunyan.createLogger({ name: 'myapp' });
 const path = require('path');
 const { base64encode } = require('nodejs-base64');
+const {generateBEToken,generateUserToken,getStaticConfig} = require('./utils');
 
 const bodyParser = require('body-parser');
 
@@ -42,6 +36,7 @@ function createApp(config) {
         "text": `Hello There, your number is ${to.split("").join("  ")} and you are colling ${from.split("").join(" ")}`
       }
     ]
+    
     return res.json(ncco)
 
   }
@@ -103,52 +98,6 @@ function localDevSetup({ config }) {
     }))
 }
 
-function generateToken({ private_key, application_id, acl, sub }) {
-  if (!acl) {
-    acl = {
-      "paths": {
-        "/**": {}
-      }
-    }
-  }
-
-  const props = {
-    "iat": 1556839380,
-    "nbf": 1556839380,
-    "exp": 1559839410,
-    "jti": 1556839410008,
-    application_id,
-    acl,
-    sub
-  }
-
-  return jwt.sign(
-    props,
-    {
-      key: private_key,
-    },
-    {
-      algorithm: 'RS256',
-    }
-  )
-}
-
-function generateUserToken({ config, user_name }) {
-  const { private_key, application_id } = config;
-  return generateToken({
-    private_key,
-    application_id,
-    sub: user_name
-  })
-}
-
-function generateBEToken({ config }) {
-  const { private_key, application_id } = config;
-  return generateToken({
-    private_key,
-    application_id
-  })
-}
 
 function checkEnvVars(){
   const isDev = !process.env.NODE_ENV
@@ -176,37 +125,6 @@ function checkEnvVars(){
 
 }
 
-function getStaticConfig(env) {
-  const isDev = !env.NODE_ENV
-  if(isDev)
-    dotenv.config();
-  const { MY_NEXMO_APP_PRIVATE_KEY, MY_NEXMO_APP_APPLICATION_ID, MY_NEXMO_APP_APPLICATION_NAME, MY_NEXMO_APP_PHONE_NUMBER } = env
-  const port = 5000
-
-  let config = {
-    port,
-    isDev,
-    phone_number: MY_NEXMO_APP_PHONE_NUMBER,
-    server_url_internal: `http://localhost:${port}`,
-    server_url: `http://localhost:${port}`,
-    private_key: MY_NEXMO_APP_PRIVATE_KEY,
-    application_id: MY_NEXMO_APP_APPLICATION_ID,
-    application_name:MY_NEXMO_APP_APPLICATION_NAME
-  }
-  if(isDev) {
-      const { MY_NEXMO_APP_API_KEY, MY_NEXMO_APP_API_SECRET } = env
-      config = {
-        ...config,
-        nexmo_account: {
-          api_key:MY_NEXMO_APP_API_KEY,
-          api_secret: MY_NEXMO_APP_API_SECRET
-        }
-      }
-  }
-
-
-  return config
-}
 
 function listenServer({ app, config }) {
   const { port } = config;
