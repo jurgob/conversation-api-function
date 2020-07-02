@@ -7,6 +7,8 @@ const logger = bunyan.createLogger({ name: 'myapp' });
 const path = require('path');
 const { base64encode } = require('nodejs-base64');
 const {generateBEToken,generateUserToken,getStaticConfig} = require('./utils');
+var cors = require('cors')
+
 
 const bodyParser = require('body-parser');
 
@@ -15,6 +17,8 @@ function createApp(config) {
 
   const app = express()
   app.use(bodyParser.json())
+  app.use(cors())
+
 
   app.use((req, res, next) => {
     const { query, baseUrl, originalUrl, url, method, statusCode, body } = req
@@ -27,7 +31,6 @@ function createApp(config) {
 
 
   const nccoHandler = (req, res) => {
-    const { server_url } = config;
     const { to = 'unknown', from = 'unknown', dtmf = -1 } = req.query;
 
     const ncco = [
@@ -36,12 +39,27 @@ function createApp(config) {
         "text": `Hello There, your number is ${to.split("").join("  ")} and you are colling ${from.split("").join(" ")}`
       }
     ]
-    
+
     return res.json(ncco)
 
   }
 
   app.get('/ncco', nccoHandler)
+
+  const tokenCreation = (req, res) => {
+    const { username } = req.params;
+
+    const jsonResponse = {
+      username,
+      token: generateUserToken({config, user_name: username})
+    }
+
+    return res.json(jsonResponse)
+
+  }
+
+    app.post('/tokens/:username', tokenCreation)
+
 
   return app;
 }
@@ -153,7 +171,6 @@ function startServer() {
   const staticConfig = getStaticConfig(process.env)
   const {phone_number, application_id, nexmo_account} = staticConfig;
   const {api_key, api_secret} = nexmo_account;
-  console.log(staticConfig)
   return Promise.resolve()
     .then(() => bindLvnToApp({phone_number, application_id, api_key, api_secret}))
     .then(() => localDevSetup({ config: staticConfig }))
