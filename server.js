@@ -7,14 +7,25 @@ const logger = bunyan.createLogger({ name: 'myapp' });
 const path = require('path');
 const { base64encode } = require('nodejs-base64');
 const {generateBEToken,generateUserToken,getStaticConfig} = require('./utils');
-var cors = require('cors')
+var cors = require('cors');
 
+//const redis = require("redis");
+const StorageClient = require('./storageClient');
+const storageClient = new StorageClient();
+
+
+const userModule = require('./code');
+
+
+// const requestToCS
 
 const bodyParser = require('body-parser');
+const { route } = require('./code');
 
 
 function createApp(config) {
 
+  
   const app = express()
   app.use(bodyParser.json())
   app.use(cors())
@@ -22,43 +33,44 @@ function createApp(config) {
 
   app.use((req, res, next) => {
     const { query, baseUrl, originalUrl, url, method, statusCode, body } = req
+
+    const csClient = async (request) => {
+      try {
+        const token = generateBEToken({ config});
+        request.headers = {
+          'Authorization': `Bearer ${token}`
+        }
+        logger.info({request}, "CSClient request -> ")
+        const axiosResponse = await axios(request)
+        logger.info({ data: axiosResponse.data ,status: axiosResponse.status   }, "CSClient reponse <-")
+        return axiosResponse
+      }catch(err) {
+        logger.info({ err }, "CSClient error <-")
+        throw err;
+      }
+    } 
+    req.nexmo = {
+      generateBEToken: () => generateBEToken({config}), 
+      generateUserToken: (username) => generateUserToken({ config, user_name: username }),
+      logger,
+      csClient,
+      storageClient
+    }
     logger.info({ query, baseUrl, originalUrl, url, method, statusCode, body }, "Request Logger:: ")
     next()
   })
+  
+  userModule.route(app)
 
   app.get('/ping', (req, res) => res.json({ success: true}))
   app.post('/voiceEvent', (req, res) => res.json({ body: req.body }))
+  app.post('/rtcEvent', async (req, res) => {
+    res.json({ body: req.body })
+    const event = req.body
+    return userModule.route(event)
+  })
 
 
-  const nccoHandler = (req, res) => {
-    const { to = 'unknown', from = 'unknown', dtmf = -1 } = req.query;
-
-    const ncco = [
-      {
-        "action": "talk",
-        "text": `Hello There, your number is ${to.split("").join("  ")} and you are colling ${from.split("").join(" ")}`
-      }
-    ]
-
-    return res.json(ncco)
-
-  }
-
-  app.get('/ncco', nccoHandler)
-
-  const tokenCreation = (req, res) => {
-    const { username } = req.params;
-
-    const jsonResponse = {
-      username,
-      token: generateUserToken({config, user_name: username})
-    }
-
-    return res.json(jsonResponse)
-
-  }
-
-    app.post('/tokens/:username', tokenCreation)
 
 
   return app;
@@ -88,14 +100,23 @@ function localDevSetup({ config }) {
         data: {
           "name": application_name,
           "capabilities": {
-            "voice": {
+            // "voice": {
+            //   "webhooks": {
+            //     "answer_url": {
+            //       "address": `${ngrok_url}/ncco`,
+            //       "http_method": "GET"
+            //     },
+            //     "event_url": {
+            //       "address": `${ngrok_url}/voiceEvent`,
+            //       "http_method": "POST"
+            //     }
+            //   }
+            // },
+            "rtc": {
+              "params": {"dog": "cane"},
               "webhooks": {
-                "answer_url": {
-                  "address": `${ngrok_url}/ncco`,
-                  "http_method": "GET"
-                },
                 "event_url": {
-                  "address": `${ngrok_url}/voiceEvent`,
+                  "address": `${ngrok_url}/rtcEvent`,
                   "http_method": "POST"
                 }
               }
@@ -103,9 +124,8 @@ function localDevSetup({ config }) {
           }
         },
         headers: { 'Authorization': `basic ${dev_api_token}` }
-      })
-        .then(({ data, status }) => {
-          logger.info({ data, status })
+      }).then(({ data, status }) => {
+        logger.info("localDevSetup App Registration*", { data, status, capabilities: data.capabilities })
         })
     })
     .then(() => ({

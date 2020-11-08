@@ -7,8 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
     "first_config": "node ./install/create_env.js",
-    "cli_create_user": "node cli_create_user.js $1",
-    "cli_token": "node cli_token.js $1"
+    "cli_create_user": "node bin_cli/cli_create_user.js $1",
+    "cli_token": "node bin_cli/cli_token.js $1"
   },
   "author": "",
   "license": "ISC",
@@ -19,7 +19,9 @@
     "dotenv": "^8.0.0",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
-    "nodejs-base64": "^1.0.3"
+    "nodejs-base64": "^1.0.3",
+    "redis": "^3.0.2",
+    "redis-mock": "^0.54.0"
   },
   "devDependencies": {
     "ngrok": "^3.2.5"

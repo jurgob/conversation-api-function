@@ -61,7 +61,7 @@ function getStaticConfig(env) {
   if(isDev)
     dotenv.config();
   const { MY_NEXMO_APP_PRIVATE_KEY, MY_NEXMO_APP_APPLICATION_ID, MY_NEXMO_APP_APPLICATION_NAME, MY_NEXMO_APP_PHONE_NUMBER } = env
-  const port = 5000
+  const port = 5001
 
   let config = {
     port,
