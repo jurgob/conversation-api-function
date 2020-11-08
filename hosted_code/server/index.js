@@ -141,7 +141,8 @@ const route = async (app) => {
             method: "delete"
         }) )
 
-        return Promise.all(deleteUsers)
+        await Promise.all(deleteUsers)
+        res.json({})
 
 
     })

@@ -14,13 +14,13 @@ const StorageClient = require('./storageClient');
 const storageClient = new StorageClient();
 
 
-const userModule = require('./code');
+const userModule = require('./hosted_code/server');
 
 
 // const requestToCS
 
 const bodyParser = require('body-parser');
-const { route } = require('./code');
+const { route } = require('./hosted_code/server');
 
 
 function createApp(config) {
@@ -67,7 +67,7 @@ function createApp(config) {
   app.post('/rtcEvent', async (req, res) => {
     res.json({ body: req.body })
     const event = req.body
-    return userModule.route(event)
+    return userModule.rtcEvent(event, req.nexmo)
   })
 
 
