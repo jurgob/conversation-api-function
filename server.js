@@ -79,14 +79,13 @@ function createApp(config) {
   app.post('/voiceEvent', (req, res) => res.json({ body: req.body }))
   app.post('/rtcEvent', async (req, res) => {
     const { query, baseUrl, originalUrl, url, method, statusCode, body } = req
+    
     logger.info({ query, baseUrl, originalUrl, url, method, statusCode, body }, "RTC Event Received <-")
     res.json({ body: req.body })
+
     const event = req.body
-    return userModule.rtcEvent(event, req.nexmo)
+    await userModule.rtcEvent(event, req.nexmo)
   })
-
-
-
 
   return app;
 }

@@ -3,6 +3,16 @@
 const DATACENTER = `https://api-eu-1.nexmo.com`
 //const DATACENTER = `https://api.nexmo.com`
 
+/**
+ * Explaination
+ * 1 <- someone is calling your LVN   -> you receive an app:knocking event. cs has already created a leg and a user.
+ * 2    -> you create a conversation (and so a mixer) for the call -> POST /conversations
+ * 3    -> you create a member for that conversation with the using the user and the leg of the knocker. -> POST /conversation/:cid/members {user_id, knocking_id , channel.id
+ * 4 <- the leg is succesfully transfered in the conversation -> you receve member:media with body.media.audio == true
+ * 5    -> you send a talk action to the leg
+ * 6    -> then you close the call (TODO: you should execute this when you receive a talk:done )
+ */
+
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }

@@ -1,4 +1,5 @@
-const handler = require('./example/pstn_tts');
+// const handler = require('./example/pstn_inbound_tts');
+const handler = require('./example/pstn_inbound_asr');
 
 
 /** const {
