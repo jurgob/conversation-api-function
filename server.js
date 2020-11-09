@@ -42,10 +42,24 @@ function createApp(config) {
         }
         logger.info({request}, "CSClient request -> ")
         const axiosResponse = await axios(request)
-        logger.info({ data: axiosResponse.data ,status: axiosResponse.status   }, "CSClient reponse <-")
+        logger.info({ request, data: axiosResponse.data ,status: axiosResponse.status   }, "CSClient reponse <-")
         return axiosResponse
       }catch(err) {
-        logger.info({ err }, "CSClient error <-")
+        const requestError = {
+          request: request
+        }
+        if (err.response){
+          requestError.response = {
+            data: err.response.data,
+            status: err.response.status,
+            status: err.response.headers,
+          }
+        } 
+        if (err.message) {
+          requestError.message = err.message
+        }
+
+        logger.error({ ...requestError }, "CSClient error <-")
         throw err;
       }
     } 
@@ -56,7 +70,6 @@ function createApp(config) {
       csClient,
       storageClient
     }
-    logger.info({ query, baseUrl, originalUrl, url, method, statusCode, body }, "Request Logger:: ")
     next()
   })
   
@@ -65,6 +78,8 @@ function createApp(config) {
   app.get('/ping', (req, res) => res.json({ success: true}))
   app.post('/voiceEvent', (req, res) => res.json({ body: req.body }))
   app.post('/rtcEvent', async (req, res) => {
+    const { query, baseUrl, originalUrl, url, method, statusCode, body } = req
+    logger.info({ query, baseUrl, originalUrl, url, method, statusCode, body }, "RTC Event Received <-")
     res.json({ body: req.body })
     const event = req.body
     return userModule.rtcEvent(event, req.nexmo)

@@ -1,73 +1,22 @@
-
-const axios = require('axios');
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
+const handler = require('./example/pstn_tts');
 
 
-const createCallWithoutVAPI = async (channel, token) => {
-    try {
-
-        const convRes = await axios({
-            url: "https://api.nexmo.com/beta/conversations",
-            method: "post",
-            data: {},
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        })
-        logger.info("Conversation Created", { data: convRes.data, status: convRes.status })
-
-        const userRes = await axios({
-            url: "https://api.nexmo.com/beta/users",
-            method: "post",
-            data: {},
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        })
-        logger.info("User Created", { data: userRes.data, status: userRes.status })
-
-        const conversation_id = convRes.data.id
-        const user_id = userRes.data.id
-
-        await sleep(3000)
-
-        const memberRes = await axios({
-            url: `https://api.nexmo.com/beta/conversations/${conversation_id}/members`,
-            method: "post",
-            data: {
-                user_id: user_id,
-                action: "invite",
-                channel: channel
-            },
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        })
-        logger.info("Member Voice Created", { data: memberRes.data, status: memberRes.status })
-    } catch (err) {
-        logger.info("Error", { err })
-    }
-}
-
-
-const rtcEvent  = async (event, nexmo) => {
-    const {
+/** const {
         generateBEToken,
         generateUserToken,
         logger,
-        csClient
-    } = nexmo;
-    
-    const type = event.type
-    if (type === 'app:knocking') {
-        const token = generateBEToken()
-        await createCallWithoutVAPI(event.body.channel, token)
-    }
+        csClient,
+        storageClient
+} = nexmo;
 
-}
+generateBEToken, generateUserToken,// those methods can generate a valid token for application
+csClient: this is just a wrapper on https://github.com/axios/axios who is already authenticated and it is  automatically logging requests 
+logger: this is an integrated logger
+storageClient: this is a simple key/value inmemory-storage client 
 
+*/
+
+const rtcEvent = async () => {}
 
 const route = async (app) => {
 
@@ -114,9 +63,9 @@ const route = async (app) => {
             storageClient
         } = req.nexmo;
         
-        const { username } = req.params;
+        // const { username } = req.params;
 
-        const user = await storageClient.get(`user:${username}`)
+        // const user = await storageClient.get(`user:${username}`)
         
         logger.error({ user}, "STORAGE")
         res.json({ user })
@@ -155,6 +104,6 @@ const route = async (app) => {
  */
 
 module.exports = {
-    rtcEvent,
-    route
+    rtcEvent: handler.rtcEvent ? handler.rtcEvent : rtcEvent,
+    route: handler.route ? handler.route : route
 }

@@ -10,7 +10,7 @@ module.exports = function StorageClient() {
         set
     }
 }
-
+// module.exports = StorageClient
 
 // const storageClient = new StorageClient();
 // const test = async () => {
