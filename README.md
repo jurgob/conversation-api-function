@@ -1,8 +1,21 @@
-# vapi_hello_world
+# conversation-service-functions
+
 
 ## what is this app?
-this is an hello world for the nexmo voice API https://developer.nexmo.com/voice/voice-api/overview.
+this will allow you to write simple application for conversation service in your local env with minimal configuration.
+check the internal conversations api here: https://jurgob.github.io/conversation-service-docs/#/openapiui
+and the possible events here: https://jurgob.github.io/conversation-service-docs/#/custom
 
+# HOW TO USE IT
+
+Before you try thise, be sure you have readed the `INSTALL` seciong
+
+You just have to write your code in this file https://github.com/jurgob/conversation-service-functions/blob/main/hosted_code/server/index.js .
+You need to export an object with two functions: `rtcEvent` and `route`.
+Read further instruction in that file
+
+
+# INSTALL
 
 ## prerequisites
 To make this app running, you need 
