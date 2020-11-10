@@ -16,7 +16,7 @@ const pstnTextToSpeech = async (event, { logger, csClient, storageClient }) => {
 
         const isAsrInProgress = await storageClient.get(`leg_asr:${legId}`)
 
-        logger.info(`leg_asr:${legId} - ${isAsrInProgress} ${typeof isAsrInProgress }  - event-type: ${type} ` ) 
+        logger.info(`leg_asr:${legId} - isAsrInProgress: ${isAsrInProgress} : ${typeof isAsrInProgress }  - event-type: ${type} ` ) 
 
         if (type === 'app:knocking') {
             logger.info("STEP 1, establish the call")
@@ -33,7 +33,7 @@ const pstnTextToSpeech = async (event, { logger, csClient, storageClient }) => {
             const conversation_id = convRes.data.id
             const user_id = event.body.user.id
 
-            await sleep(000)
+            await sleep(1000)
 
             const memberRes = await csClient({
                 url: `${DATACENTER}/beta/conversations/${conversation_id}/members`,
