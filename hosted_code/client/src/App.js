@@ -6,9 +6,66 @@ import createAudioConnection from './utils/createRtcAudioConnection'
 import createCSClient from './utils/csClient'
 
 import './App.css';
-
-
 function App() {
+  const [loginData, setLoginData] = useState(null)
+
+  const onSubmitLogin = async ({username}) => {
+    const loginRes = await axios({
+      url: `http://localhost:5001/login`,
+      method: "post",
+      data: {
+        "user": username
+      }
+    })
+    console.log('loginRes: ', loginRes)
+    setLoginData(loginRes.data)
+  }
+
+  useEffect(async () => {
+    document.title = "Conversation Service examples"
+
+    
+  })
+
+  return (
+    <div>
+      {!loginData && <FormLogin onSubmit={onSubmitLogin} />}
+      {loginData && <LoggedPage loginData={loginData} />}
+    </div>
+  )
+}
+
+function FormLogin({ onSubmit }) {
+  const { register, handleSubmit, errors } = useForm();
+
+  return (
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <label htmlFor="username">User Name</label>
+
+      {/* use aria-invalid to indicate field contain error */}
+      <input
+        type="text"
+        id="username"
+        name="username"
+        aria-invalid={errors.name ? "true" : "false"}
+        ref={register({ required: true, maxLength: 30 })}
+      />
+
+      {/* use role="alert" to announce the error message */}
+      {errors.name && errors.name.type === "required" && (
+        <span role="alert">This is required</span>
+      )}
+      {errors.name && errors.name.type === "maxLength" && (
+        <span role="alert">Max length exceeded</span>
+      )}
+
+      <input type="submit" />
+    </form>
+  )
+}
+
+
+function LoggedPage(props) {
   let csClient = null;
   const [eventsHistory, setEvents] = useState([])
   
@@ -20,17 +77,8 @@ function App() {
   }
 
   useEffect(async () => {
-    document.title = "Conversation Service examples"
-    window.axios = axios
-
-    const loginRes = await axios({
-      url: `http://localhost:5001/login`,
-      method: "post",
-      data: {
-        "user": "jurgo"
-      }
-    })
-    const {token, cs_url, ws_url} = loginRes.data
+    
+    const {token, cs_url, ws_url} = props.loginData
     csClient = await createCSClient({
       token, cs_url, ws_url
     });
@@ -72,12 +120,21 @@ function App() {
     
   }
 
+  const getMyConversations = async () => {
+    await csClient.request({
+      url: `/v0.3/users/${csClient.getSessionData().user_id}/conversations`,
+      method: "get"
+    })
+  }
+
   return (
     <div className="App">
       <h1>Conversations Client Playground</h1>  
       <div>
         <h2>Create Conversation and Join</h2>
         <FormCreateConversation onSubmit={onCreateConversationSubmit} />
+        <h2>Get My Conversations</h2>
+        <button onClick={getMyConversations} >Get My Conversations</button>
       </div>
       <div>
         <h2>History</h2>
