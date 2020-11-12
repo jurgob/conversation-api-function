@@ -1,7 +1,12 @@
 
 
 ### 
-GET http://localhost:5001/login
+POST http://localhost:5001/login
+content-type: application/json
+
+{
+    "user":"jurgo"
+}
 
 ### register a new user
 POST http://localhost:5001/subscribe
@@ -13,7 +18,7 @@ content-type: application/json
 
 
 ### get user
-GET  http://localhost:5001/users/jurgo
+GET  http://localhost:5001/users
 content-type: application/json
 
 ### delete all users

@@ -1,6 +1,9 @@
 // const handler = require('./example/pstn_inbound_tts');
 const handler = require('./example/pstn_inbound_asr');
 
+const CS_URL = `https://api-eu-1.nexmo.com`
+const WS_URL = `https://ws-eu-1.nexmo.com`
+
 
 /** const {
         generateBEToken,
@@ -20,6 +23,26 @@ storageClient: this is a simple key/value inmemory-storage client
 const rtcEvent = async () => {}
 
 const route = async (app) => {
+    
+    app.post('/login', (req, res) => {
+        const {
+            generateBEToken,
+            generateUserToken,
+            logger,
+            csClient,
+            storageClient
+        } = req.nexmo;
+
+        const { user } = req.body;
+
+        res.json({
+            user:user,
+            token: generateUserToken("jurgo"),
+            ws_url: WS_URL,
+            cs_url: CS_URL
+        })
+    })
+
 
     app.post('/subscribe', async (req, res) => {
 
@@ -30,12 +53,11 @@ const route = async (app) => {
             csClient,
             storageClient
         } = req.nexmo;
-
-
+        
         try {
             const { username } = req.body;
             const resNewUser = await csClient({
-                url: "https://api.nexmo.com/beta/users",
+                url: `${CS_URL}/beta/users`,
                 method: "post",
                 data: {
                     name: username
@@ -73,7 +95,7 @@ const route = async (app) => {
 
     })
 
-    app.del('/users', async (req, res) => {
+    app.del(`${CS_URL}/users`, async (req, res) => {
         const {
             generateBEToken,
             generateUserToken,
@@ -106,5 +128,5 @@ const route = async (app) => {
 
 module.exports = {
     rtcEvent: handler.rtcEvent ? handler.rtcEvent : rtcEvent,
-    route: handler.route ? handler.route : route
+    route: route
 }

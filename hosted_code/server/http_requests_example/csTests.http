@@ -1,4 +1,6 @@
 @token=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MDQ5MTg5NTUuMDEsIm5iZiI6MTYwNDkxODk1NS4wMSwiZXhwIjoxNjEwMTAyOTU1LjAxLCJqdGkiOjE2MDQ5MTg5NTUuMDEsImFwcGxpY2F0aW9uX2lkIjoiOWRmNTAyZDktNzg0ZS00ZjNmLThiMjMtZThmYWY0MzhlYjhmIiwiYWNsIjp7InBhdGhzIjp7Ii8qKiI6e319fX0.cXyVLcZWq4Oabc2awNt1wGx19W7vNyppbn9S8TjjCmVO9LOqHkOWDI4fALIMzKaPwwxKR4GG-MJSZLzlvu4X8VgFyWimIW-RJf8Tam2Ku9JHaaKDORR-sM_705d0kHnczk4mAmK3GaCiyNw2glrukBlL8xfuO37Y_COe7HTGP7i8mBjnS0J345jt4x5ZOIzRGhBcVBFNpnQCp6YHsQx-Hdle8Q9bc0RbTXE700XveI6HCSRRYB1ctc2O0iiT8g-p3tVvVF-yuLIQVURjRpdwAjex_3x9GQAph1mAkjGcfZiChBCJPIN4rWlii7wIxiFyTunPFFiEfThrL7u0XwSXxQ
+@token_user=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MDUxMTczMzAuMDM3LCJuYmYiOjE2MDUxMTczMzAuMDM3LCJleHAiOjE2MTAzMDEzMzAuMDM3LCJqdGkiOjE2MDUxMTczMzAuMDM3LCJhcHBsaWNhdGlvbl9pZCI6IjlkZjUwMmQ5LTc4NGUtNGYzZi04YjIzLWU4ZmFmNDM4ZWI4ZiIsImFjbCI6eyJwYXRocyI6eyIvKioiOnt9fX0sInN1YiI6Imp1cmdvIn0.PzzlYfXzEHvgsRMx4Lj5t2Vq1n9SZLcIhr6vrMZZb-eGCNvSxdHRLO-zHuU7S9yLrBaYQjiS8ife2BuW0kATXpHLNELUvc-NcwgsVpuwl8x7UnnbRTSXkdNhC8NnHE0mQtxynYfU7tBsyUHaEz28z79PHtxptpNtmcvmFF7Vww_9VSM-LmZa49sOWP0ac06BPZ0kMlLexhKLS1oBq3OyhUklhOc9AJe6jQxVOTVlKlAsiM6XiZXGQQD9ElVXoSN0uukOtAtkLhalgENntEou0O7-u0HyqPHy-kxjy3Xm60Q4QoMWBnYFcM3KEyhV46TXGr5_sNQmw1a5DaTsjwifXg"
+
 @datacenter=https://api-eu-1.nexmo.com
 #@datacenter=https://api.nexmo.com
 
@@ -7,8 +9,14 @@ GET {{datacenter}}/v0.3/users
 content-type: application/json
 Authorization: Bearer {{token}}
 
-###
+### 
 
-GET https://api.nexmo.com/v0.3/users/USR-ec219045-4ff3-4081-9c8c-8c661d16ec45
+GET {{datacenter}}/v0.3/users/USR-ec219045-4ff3-4081-9c8c-8c661d16ec45
 content-type: application/json
 Authorization: Bearer {{token}}
+
+###
+
+GET {{datacenter}}/v0.3/users/USR-a2157ff4-13a4-4ca8-892c-504fa11409e7/conversations
+content-type: application/json
+Authorization: Bearer {{token_user}}
