@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useForm } from "react-hook-form";
 import axios from 'axios';
 
-import createAudioConnection from './utils/createRtcAudioConnection'
+import createRtcAudioConnection from './utils/createRtcAudioConnection'
 import createCSClient from './utils/csClient'
 
 import './App.css';
@@ -21,7 +21,7 @@ function App() {
     setLoginData(loginRes.data)
   }
 
-  useEffect(async () => {
+  useEffect(() => {
     document.title = "Conversation Service examples"
 
     
@@ -64,36 +64,134 @@ function FormLogin({ onSubmit }) {
   )
 }
 
+// let peerConnection = null
 
 function LoggedPage(props) {
-  let csClient = null;
+  
+  const [csClient, setCsClient] = useState(null)
+  
   const [eventsHistory, setEvents] = useState([])
   
-  const appendHistory = (clientEvent) => {
-    console.log('on event from react event: ', clientEvent)
-    console.log('on event from react array: ', eventsHistory)
-    console.log('on event from react new array: ', [...eventsHistory, clientEvent])
-    setEvents(eventsHistory => [...eventsHistory, clientEvent])
-  }
-
-  useEffect(async () => {
-    
-    const {token, cs_url, ws_url} = props.loginData
-    csClient = await createCSClient({
-      token, cs_url, ws_url
-    });
-    
-
-    csClient.onEvent(appendHistory)
-    csClient.onRequestStart(appendHistory)
-    csClient.onRequestEnd(appendHistory)
-    
-    window.csClient = csClient
-
+  const [audioState, setAudioState] = useState({
+    audioSrcObject: null,
+    peerConnection: null
   })
 
+  
+  const appendHistory = (clientEvent) => {
+    setEvents(eventsHistory => [...eventsHistory, clientEvent])
+  }
+  //init cs client
+  useEffect(() => {
+    console.log(` ->->->-> useEffect init csClient`)
+
+
+    const initCSClient = async () => {
+      console.log(` ++++ initialize createCSClient`)
+      const { token, cs_url, ws_url } = props.loginData
+      const _csClient = await createCSClient({
+        token, cs_url, ws_url
+      });
+
+      setCsClient(() => _csClient)
+    }
+
+    initCSClient()
+
+
+  }, [props.loginData])
+
+  useEffect(() => {
+    console.log(` ->->->-> useEffect csClient Handler `, csClient);
+    if (!csClient)
+      return;
+
+    const onTrack = (e) => {
+      const _setAudioSrcObject = audioState.peerConnection.getRemoteStreams()[0]
+      console.log(`_setAudioSrcObject `, _setAudioSrcObject)
+
+      setAudioState(as => {
+        console.log(`setAudioState onTrack`, {
+          ...as,
+          audioSrcObject: _setAudioSrcObject
+        })
+        return {
+          ...as, 
+          audioSrcObject: _setAudioSrcObject  
+        }
+      })
+    }
+
+    const onEvent = async (evt) => {
+      if (evt.type === 'rtc:answer') {
+        const sdp = evt.body.body.answer
+        const remoteDescription = new RTCSessionDescription({
+          type: 'answer',
+          sdp,
+        })
+        
+        console.log(`rtc:answer audioState `, audioState)
+
+        if (audioState.peerConnection) {
+          
+          audioState.peerConnection.ontrack = onTrack
+          
+          audioState.peerConnection.setRemoteDescription(remoteDescription)
+        }
+
+      }
+
+      appendHistory(evt)
+    }
+
+    csClient.onEvent(onEvent)
+    csClient.onRequestStart(appendHistory)
+    csClient.onRequestEnd(appendHistory)
+
+  }, [audioState])
+
+  const onEnableAudioInConversationSubmit = async (data) => {
+    // const { conversation_id } = data
+    try {
+    console.log(`--- onEnableAudioInConversationSubmit`, data)
+    const { audio_conversation_id} = data
+    const conversation_id = audio_conversation_id
+    const pc = await createRtcAudioConnection()
+    // setpeerConnection(pc)
+    // setAudioState(as => {
+    //   console.log(`setAudioState `, { ...as, peerConnection: pc })
+    //   return { ...as, peerConnection: pc }
+    // })
+    
+    console.log(`setAudioState `, { ...audioState, peerConnection: pc })
+    setAudioState({ ...audioState, peerConnection: pc })
+    
+    // peerConnection = pc
+    const userConvRes = await csClient.request({
+        url: `/v0.3/users/${csClient.getSessionData().user_id}/conversations`,
+        method: "get"
+    })
+
+    const member_id = userConvRes.data._embedded.conversations.find(({ id }) => id === conversation_id)._embedded.member.id 
+
+    await csClient.request({
+      url: `/v0.1/conversations/${conversation_id}/rtc`,
+      method: "post",
+      data: {
+        from: member_id,
+        body: {
+          offer: pc.localDescription,
+        }
+      }
+    })
+
+    } catch (e){
+      console.log(`onEnableAudioInConversationSubmit error: `, e)
+    }
+
+  }
+
   const onCreateConversationSubmit = async (data) => {
-    console.log(data)
     const { conversation_name, conversation_display_name } = data
     const convRes = await csClient.request({
       url: `/v0.3/conversations`,
@@ -127,6 +225,7 @@ function LoggedPage(props) {
     })
   }
 
+  
   return (
     <div className="App">
       <h1>Conversations Client Playground</h1>  
@@ -135,16 +234,20 @@ function LoggedPage(props) {
         <FormCreateConversation onSubmit={onCreateConversationSubmit} />
         <h2>Get My Conversations</h2>
         <button onClick={getMyConversations} >Get My Conversations</button>
+        <h2>Enable Audio In Conversations</h2>
+        <FormEnableAudioInConversations onSubmit={onEnableAudioInConversationSubmit} />
+        <Audio srcObject={audioState.audioSrcObject} />
       </div>
       <div>
         <h2>History</h2>
         <div>
-          <button onClick={() => setEvents([])} >Clean History</button>
+          <button onClick={() => setEvents(() => [])} >Clean History</button>
         </div>
         {eventsHistory.map((evt, idx) => {
           return (
-            <div key={idx} style={{padding: "5px", margin: "5px", backgroundColor: "#ddd"}} >
-              <pre  >{JSON.stringify(evt, ' ', ' ')}</pre>
+            <div key={idx}  >
+              <EventTitle event={evt} style={{ padding: "5px", margin: "5px" }} />
+              <pre style={{ padding: "5px", margin: "5px", backgroundColor: "#ddd" }} >{JSON.stringify(evt, ' ', ' ')}</pre>
             </div>
           )
         })}
@@ -152,6 +255,51 @@ function LoggedPage(props) {
     </div>
   );
 }
+
+const EventTitle = ({event, style}) => {
+  let text ='unknown'
+  if(event.request && event.response){
+    text = '<- http response'
+  } else if (event.request && !event.response) {
+    text = '-> http request'
+  } else if (event.type && event.body){
+    text = '<- ws event'
+  }
+
+
+  return (<h3 style={style} >{text}</h3>)
+}
+
+function FormEnableAudioInConversations({ onSubmit }) {
+  const { register, handleSubmit, errors } = useForm();
+
+  return (
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <label htmlFor="audio_conversation_id">Conversations Id </label>
+
+      {/* use aria-invalid to indicate field contain error */}
+      <input
+        type="text"
+        id="audio_conversation_id"
+        name="audio_conversation_id"
+        aria-invalid={errors.name ? "true" : "false"}
+        defaultValue= "CON-71ed48a1-4983-4557-a911-561fcb380d2f"
+        ref={register({ required: true, maxLength: 50,  })}
+      />
+
+      {/* use role="alert" to announce the error message */}
+      {errors.name && errors.name.type === "required" && (
+        <span role="alert">This is required</span>
+      )}
+      {errors.name && errors.name.type === "maxLength" && (
+        <span role="alert">Max length exceeded</span>
+      )}
+
+      <input type="submit" />
+    </form>
+  )
+}
+
 
 function FormCreateConversation({onSubmit}){
   const { register, handleSubmit, errors } = useForm();
@@ -191,7 +339,16 @@ function FormCreateConversation({onSubmit}){
   )
 }
 
+function Audio({ srcObject, ...props }) {
+  const refAudio = useRef(null)
 
+  useEffect(() => {
+    if (!refAudio.current) return
+    refAudio.current.srcObject = srcObject
+  }, [srcObject])
+
+  return <audio ref={refAudio} {...props} controls autoPlay />
+}
 
 
 export default App;

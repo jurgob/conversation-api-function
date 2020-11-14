@@ -19,10 +19,9 @@ const logger = {
 
 
 export default async function createCSClient({ token, cs_url, ws_url}){
-    console.log(`createCSClient`)
-    const userData ={
-        token,
-    }
+    // const userData ={
+    //     token,
+    // }
 
     let sessionData = {}
 
@@ -94,7 +93,6 @@ export default async function createCSClient({ token, cs_url, ws_url}){
     const getSessionData = () => sessionData
 
     return new Promise(resolve => {
-        console.log(`createCSClient Promise`);
 
         const capi_client = socket_io.connect(ws_url, {
             path: "/rtc",
@@ -104,21 +102,17 @@ export default async function createCSClient({ token, cs_url, ws_url}){
             autoConnect: true,
         });
 
-        console.log(`createCSClient socket_io.connect`);
         
         require('socketio-wildcard')(socket_io.Manager)(capi_client)
 
         capi_client.on('connect', function () {
 
             capi_client.on('*', function (packet) {
-                console.log(`packet rcved: `, packet)
                 const [type, body] = packet.data;
                 const event = { type, body };
                 onEventCallback(event)
-                console.log(`event: `, event);
 
             })
-            console.log(`token:`, token)
             const loginData = {
                 "device_id": "666666666666666", // TODO: use https://github.com/Valve/fingerprintjs2
                 "device_type": "js",
@@ -128,7 +122,6 @@ export default async function createCSClient({ token, cs_url, ws_url}){
             capi_client.emit("session:login", { body: loginData} )
 
             capi_client.on("session:success", (event) => {
-                console.log("session:success event", event )
                 const {id, name, user_id} = event.body
                 sessionData = {
                     session_id: id,
@@ -136,7 +129,6 @@ export default async function createCSClient({ token, cs_url, ws_url}){
                     user_id: user_id
                 }
                 //sessionData
-                console.log(`createCSClient session:success`);
                 resolve({
                     request,
                     getSessionData,

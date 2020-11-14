@@ -1,4 +1,4 @@
-function createRtcAudioConnection() {
+function createRtcAudioConnection(){
     return navigator.mediaDevices
         .getUserMedia({
             video: false,
@@ -10,15 +10,10 @@ function createRtcAudioConnection() {
                 {
                     urls: "stun:stun.l.google.com:19302",
                     // urls: 'turn:138.68.169.35:3478?transport=tcp',
-                    credential: 'bar',
-                    username: 'foo2',
+                    // credential: 'bar',
+                    // username: 'foo2',
                 },
             ]
-            // const iceServers = [
-            //   {
-            //     urls: 'stun:stun.l.google.com:19302'
-            //   }
-            // ]
 
             var pc = new RTCPeerConnection({
                 iceServers,
