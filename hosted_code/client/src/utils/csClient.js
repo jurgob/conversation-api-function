@@ -109,7 +109,7 @@ export default async function createCSClient({ token, cs_url, ws_url}){
 
             capi_client.on('*', function (packet) {
                 const [type, body] = packet.data;
-                const event = { type, body };
+                const event = { type, ...body };
                 onEventCallback(event)
 
             })

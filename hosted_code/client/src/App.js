@@ -124,7 +124,7 @@ function LoggedPage(props) {
 
     const onEvent = async (evt) => {
       if (evt.type === 'rtc:answer') {
-        const sdp = evt.body.body.answer
+        const sdp = evt.body.answer
         const remoteDescription = new RTCSessionDescription({
           type: 'answer',
           sdp,
