@@ -1,11 +1,21 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useForm } from "react-hook-form";
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+
+import FormCreateConversation from './components/FormCreateConversation'
+import FormEnableAudioInConversations from './components/FormEnableAudioInConversations'
+import FormLogin from './components/FormLogin'
+import Audio from './components/Audio'
+import EventsHistory from './components/EventsHistory'
 
 import createRtcAudioConnection from './utils/createRtcAudioConnection'
 import createCSClient from './utils/csClient'
 
+
 import './App.css';
+
+
+
+
 function App() {
   const [loginData, setLoginData] = useState(null)
 
@@ -35,34 +45,7 @@ function App() {
   )
 }
 
-function FormLogin({ onSubmit }) {
-  const { register, handleSubmit, errors } = useForm();
 
-  return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <label htmlFor="username">User Name</label>
-
-      {/* use aria-invalid to indicate field contain error */}
-      <input
-        type="text"
-        id="username"
-        name="username"
-        aria-invalid={errors.name ? "true" : "false"}
-        ref={register({ required: true, maxLength: 30 })}
-      />
-
-      {/* use role="alert" to announce the error message */}
-      {errors.name && errors.name.type === "required" && (
-        <span role="alert">This is required</span>
-      )}
-      {errors.name && errors.name.type === "maxLength" && (
-        <span role="alert">Max length exceeded</span>
-      )}
-
-      <input type="submit" />
-    </form>
-  )
-}
 
 // let peerConnection = null
 
@@ -84,7 +67,6 @@ function LoggedPage(props) {
   //init cs client
   useEffect(() => {
     console.log(` ->->->-> useEffect init csClient`)
-
 
     const initCSClient = async () => {
       console.log(` ++++ initialize createCSClient`)
@@ -157,11 +139,6 @@ function LoggedPage(props) {
     const { audio_conversation_id} = data
     const conversation_id = audio_conversation_id
     const pc = await createRtcAudioConnection()
-    // setpeerConnection(pc)
-    // setAudioState(as => {
-    //   console.log(`setAudioState `, { ...as, peerConnection: pc })
-    //   return { ...as, peerConnection: pc }
-    // })
     
     console.log(`setAudioState `, { ...audioState, peerConnection: pc })
     setAudioState({ ...audioState, peerConnection: pc })
@@ -237,117 +214,14 @@ function LoggedPage(props) {
         <h2>Enable Audio In Conversations</h2>
         <FormEnableAudioInConversations onSubmit={onEnableAudioInConversationSubmit} />
         <Audio srcObject={audioState.audioSrcObject} />
+        <EventsHistory 
+          eventsHistory={eventsHistory} 
+          onCleanHistoryClick={() => setEvents(() => [])}
+        />
       </div>
-      <div>
-        <h2>History</h2>
-        <div>
-          <button onClick={() => setEvents(() => [])} >Clean History</button>
-        </div>
-        {eventsHistory.map((evt, idx) => {
-          return (
-            <div key={idx}  >
-              <EventTitle event={evt} style={{ padding: "5px", margin: "5px" }} />
-              <pre style={{ padding: "5px", margin: "5px", backgroundColor: "#ddd" }} >{JSON.stringify(evt, ' ', ' ')}</pre>
-            </div>
-          )
-        })}
-      </div>    
+          
     </div>
   );
-}
-
-const EventTitle = ({event, style}) => {
-  let text ='unknown'
-  if(event.request && event.response){
-    text = '<- http response'
-  } else if (event.request && !event.response) {
-    text = '-> http request'
-  } else if (event.type && event.body){
-    text = '<- ws event'
-  }
-
-
-  return (<h3 style={style} >{text}</h3>)
-}
-
-function FormEnableAudioInConversations({ onSubmit }) {
-  const { register, handleSubmit, errors } = useForm();
-
-  return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <label htmlFor="audio_conversation_id">Conversations Id </label>
-
-      {/* use aria-invalid to indicate field contain error */}
-      <input
-        type="text"
-        id="audio_conversation_id"
-        name="audio_conversation_id"
-        aria-invalid={errors.name ? "true" : "false"}
-        defaultValue= "CON-71ed48a1-4983-4557-a911-561fcb380d2f"
-        ref={register({ required: true, maxLength: 50,  })}
-      />
-
-      {/* use role="alert" to announce the error message */}
-      {errors.name && errors.name.type === "required" && (
-        <span role="alert">This is required</span>
-      )}
-      {errors.name && errors.name.type === "maxLength" && (
-        <span role="alert">Max length exceeded</span>
-      )}
-
-      <input type="submit" />
-    </form>
-  )
-}
-
-
-function FormCreateConversation({onSubmit}){
-  const { register, handleSubmit, errors } = useForm();
-
-  return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <label htmlFor="conversation_name">Name</label>
-
-      {/* use aria-invalid to indicate field contain error */}
-      <input
-        type="text"
-        id="conversation_name"
-        name="conversation_name"
-        aria-invalid={errors.name ? "true" : "false"}
-        ref={register({ required: true, maxLength: 30 })}
-      />
-      <br />
-      <label htmlFor="conversation_display_name">Display Name</label>
-      <input
-        type="text"
-        id="conversation_display_name"
-        name="conversation_display_name"
-        aria-invalid={errors.name ? "true" : "false"}
-        ref={register({ required: true, maxLength: 30 })}
-      />
-
-      {/* use role="alert" to announce the error message */}
-      {errors.name && errors.name.type === "required" && (
-        <span role="alert">This is required</span>
-      )}
-      {errors.name && errors.name.type === "maxLength" && (
-        <span role="alert">Max length exceeded</span>
-      )}
-
-      <input type="submit" />
-    </form>
-  )
-}
-
-function Audio({ srcObject, ...props }) {
-  const refAudio = useRef(null)
-
-  useEffect(() => {
-    if (!refAudio.current) return
-    refAudio.current.srcObject = srcObject
-  }, [srcObject])
-
-  return <audio ref={refAudio} {...props} controls autoPlay />
 }
 
 

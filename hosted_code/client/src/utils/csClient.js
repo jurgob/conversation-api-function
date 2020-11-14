@@ -2,11 +2,12 @@
 import axios from 'axios';
 // import io from 'socket.io-client';
 const socket_io = require('socket.io-client');
+function uuidv4() {
+    return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
+        (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+    );
+}
 
-
-// const CAPI_URL = `https://ws-eu-1.nexmo.com`
-// const CAPI_URL = `https://ws.nexmo.com`
-// const CS_URL = `https://api-eu-1.nexmo.com`
 
 const logger = {
     info: (...args) => {
@@ -25,19 +26,35 @@ export default async function createCSClient({ token, cs_url, ws_url}){
 
     let sessionData = {}
 
-    let onEventCallback = () => {}
-    let onRequestStartCallback = () => {}
-    let onRequestEndCallback = () => { }
+    // let onEventCallback = () => {}
+    let onEventCallbacks = []
+    let onRequestStartCallbacks = []
+    let onRequestEndCallbacks = []
 
     const onEvent = (callback) => {
-        onEventCallback = callback
+        const id = uuidv4()
+        onEventCallbacks.push({
+            id,
+            callback
+        }) 
+        return id
     }
     const onRequestStart = (callback) => {
-        onRequestStartCallback = callback
+        const id = uuidv4()
+        onRequestStartCallbacks.push({
+            id,
+            callback
+        })
+        return id
     }
 
     const onRequestEnd = (callback) => {
-        onRequestEndCallback = callback
+        const id = uuidv4()
+        onRequestEndCallbacks.push({
+            id,
+            callback
+        })
+        return id
     }
 
     const request = async (request) => {
@@ -56,16 +73,18 @@ export default async function createCSClient({ token, cs_url, ws_url}){
                 }
 
             logger.info({ request }, "CSClient request -> ")
-            onRequestStartCallback({ request})
+            onRequestStartCallbacks
+                .forEach(({ callback }) => callback({ request }))
             const axiosResponse = await axios(request)
-            onRequestEndCallback({ 
-                request, 
-                response: { 
-                    data: axiosResponse.data, 
-                    status: axiosResponse.status,
-                    headers: axiosResponse.headers
-                }
-            })
+            onRequestEndCallbacks
+                .forEach(({ callback }) => callback({
+                    request,
+                    response: {
+                        data: axiosResponse.data,
+                        status: axiosResponse.status,
+                        headers: axiosResponse.headers
+                    }
+                }))
 
             logger.info({ request, data: axiosResponse.data, status: axiosResponse.status }, "CSClient reponse <-")
             return axiosResponse
@@ -85,7 +104,9 @@ export default async function createCSClient({ token, cs_url, ws_url}){
             }
 
             logger.error({ ...requestError }, "CSClient error <-")
-            onRequestEndCallback(requestError)
+            onRequestEndCallbacks
+                .forEach(({ callback }) => callback(requestError))
+
             throw err;
         }
     }
@@ -110,7 +131,9 @@ export default async function createCSClient({ token, cs_url, ws_url}){
             capi_client.on('*', function (packet) {
                 const [type, body] = packet.data;
                 const event = { type, ...body };
-                onEventCallback(event)
+                // onEventCallback(event)
+                onEventCallbacks
+                    .forEach(({callback}) => callback(event) )
 
             })
             const loginData = {
