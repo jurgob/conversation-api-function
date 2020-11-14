@@ -19,14 +19,8 @@ const logger = {
 }
 
 
-export default async function createCSClient({ token, cs_url, ws_url}){
-    // const userData ={
-    //     token,
-    // }
-
+export default function CSClient(){
     let sessionData = {}
-
-    // let onEventCallback = () => {}
     let onEventCallbacks = []
     let onRequestStartCallbacks = []
     let onRequestEndCallbacks = []
@@ -58,17 +52,17 @@ export default async function createCSClient({ token, cs_url, ws_url}){
     }
 
     const request = async (request) => {
+        const { token, session_id, cs_url} = sessionData
         try {
             request.headers = {
                 'Authorization': `Bearer ${token}`,
                 // 'x-nexmo-sessionid': session_id
             }
-            // request.baseUrl = cs_url
-            // cs_url = `https://api.nexmo.com`
+            
             request.url = `${cs_url}${request.url}`
             if(request.data)
                 request.data = {
-                    originating_session: sessionData.session_id,
+                    originating_session: session_id,
                     ...request.data
                 }
 
@@ -113,7 +107,7 @@ export default async function createCSClient({ token, cs_url, ws_url}){
     // const onEvent = () => 
     const getSessionData = () => sessionData
 
-    return new Promise(resolve => {
+    const connect = async ({ token, cs_url, ws_url }) =>  new Promise(resolve => {
 
         const capi_client = socket_io.connect(ws_url, {
             path: "/rtc",
@@ -149,16 +143,13 @@ export default async function createCSClient({ token, cs_url, ws_url}){
                 sessionData = {
                     session_id: id,
                     user_name: name,
-                    user_id: user_id
+                    user_id: user_id,
+                    token,
+                    cs_url, 
+                    ws_url
+
                 }
-                //sessionData
-                resolve({
-                    request,
-                    getSessionData,
-                    onEvent,
-                    onRequestStart,
-                    onRequestEnd
-                })
+                resolve()
 
             })
         })
@@ -168,5 +159,13 @@ export default async function createCSClient({ token, cs_url, ws_url}){
     });
 
     
+    return {
+        connect,
+        request,
+        getSessionData,
+        onEvent,
+        onRequestStart,
+        onRequestEnd
+    }
 
 }

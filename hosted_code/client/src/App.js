@@ -8,11 +8,14 @@ import Audio from './components/Audio'
 import EventsHistory from './components/EventsHistory'
 
 import createRtcAudioConnection from './utils/createRtcAudioConnection'
-import createCSClient from './utils/csClient'
+import CSClient from './utils/csClient'
 
 
 import './App.css';
 
+
+
+const csClient = CSClient()
 
 
 
@@ -47,23 +50,38 @@ function App() {
 
 
 
-// let peerConnection = null
+function useCSClientEvents (csClient) {
+  
+  const [event, setEvent] = useState(null)
+  
+  const setLastEvent = (clientEvent) => {
+    setEvent(clientEvent)
+  }
+  
+  useEffect(() => {
+    csClient.onEvent(setLastEvent)
+    csClient.onRequestStart(setLastEvent)
+    csClient.onRequestEnd(setLastEvent)
+  })
+  
+  return event
+}
+
 
 function LoggedPage(props) {
   
-  const [csClient, setCsClient] = useState(null)
+  // const [csClient, setCsClient] = useState(null)
   
+  const lastCSClientEvent = useCSClientEvents(csClient)
   const [eventsHistory, setEvents] = useState([])
   
+  // useCSClientEvents
   const [audioState, setAudioState] = useState({
     audioSrcObject: null,
     peerConnection: null
   })
 
   
-  const appendHistory = (clientEvent) => {
-    setEvents(eventsHistory => [...eventsHistory, clientEvent])
-  }
   //init cs client
   useEffect(() => {
     console.log(` ->->->-> useEffect init csClient`)
@@ -71,17 +89,29 @@ function LoggedPage(props) {
     const initCSClient = async () => {
       console.log(` ++++ initialize createCSClient`)
       const { token, cs_url, ws_url } = props.loginData
-      const _csClient = await createCSClient({
+      
+      csClient.connect({
         token, cs_url, ws_url
       });
 
-      setCsClient(() => _csClient)
     }
 
     initCSClient()
 
 
   }, [props.loginData])
+
+  useEffect(() => {
+    
+    const appendHistory = (clientEvent) => {
+      if (clientEvent)
+        setEvents(eventsHistory => [...eventsHistory, clientEvent])
+    }
+
+    appendHistory(lastCSClientEvent)
+
+  }, [lastCSClientEvent] )
+
 
   useEffect(() => {
     console.log(` ->->->-> useEffect csClient Handler `, csClient);
@@ -123,12 +153,9 @@ function LoggedPage(props) {
 
       }
 
-      appendHistory(evt)
     }
 
     csClient.onEvent(onEvent)
-    csClient.onRequestStart(appendHistory)
-    csClient.onRequestEnd(appendHistory)
 
   }, [audioState])
 
