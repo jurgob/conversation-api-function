@@ -1,4 +1,4 @@
-const {generateBEToken,generateUserToken,getStaticConfig} = require('./utils');
+const {generateBEToken,generateUserToken,getStaticConfig} = require('../utils');
 
 const config = getStaticConfig(process.env)
 
