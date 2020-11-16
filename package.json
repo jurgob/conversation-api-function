@@ -2,13 +2,15 @@
   "name": "vapi_hello_world",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js",
+    "start": "conversation-api-function run examples/server/index.js",
     "first_config": "node ./install/create_env.js",
     "cli_create_user": "node bin/cli_create_user.js $1",
     "cli_token": "node bin/cli_token.js $1"
+  },
+  "bin": {
+    "conversation-api-function": "./bin/conversation-api-function.js"
   },
   "author": "",
   "license": "ISC",
@@ -19,11 +21,10 @@
     "dotenv": "^8.0.0",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
+    "ngrok": "^3.2.5",
     "nodejs-base64": "^1.0.3",
     "redis": "^3.0.2",
-    "redis-mock": "^0.54.0"
-  },
-  "devDependencies": {
-    "ngrok": "^3.2.5"
+    "redis-mock": "^0.54.0",
+    "yargs": "^16.1.0"
   }
 }

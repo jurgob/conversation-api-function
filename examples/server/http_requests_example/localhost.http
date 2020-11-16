@@ -13,7 +13,7 @@ POST http://localhost:5001/subscribe
 content-type: application/json
 
 {
-    "username":"jurgo"
+    "username":"jurgo2"
 }
 
 

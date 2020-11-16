@@ -13,17 +13,12 @@ var cors = require('cors');
 const StorageClient = require('./storageClient');
 const storageClient = new StorageClient();
 
-
-const userModule = require('./hosted_code/server');
-
-
-// const requestToCS
+// const conversationApiFunctionModule = require('../hosted_code/server');
 
 const bodyParser = require('body-parser');
-const { route } = require('./hosted_code/server');
 
 
-function createApp(config) {
+function createApp(config, conversationApiFunctionModule) {
 
   
   const app = express()
@@ -73,7 +68,7 @@ function createApp(config) {
     next()
   })
   
-  userModule.route(app)
+  conversationApiFunctionModule.route(app)
 
   app.get('/ping', (req, res) => res.json({ success: true}))
   app.post('/voiceEvent', (req, res) => res.json({ body: req.body }))
@@ -84,7 +79,7 @@ function createApp(config) {
     res.json({ body: req.body })
 
     const event = req.body
-    await userModule.rtcEvent(event, req.nexmo)
+    await conversationApiFunctionModule.rtcEvent(event, req.nexmo)
   })
 
   return app;
@@ -200,8 +195,15 @@ function bindLvnToApp({phone_number, application_id, api_key, api_secret}){
         })
 }
 
-function startServer() {
+function startServer(conversationApiFunctionModule) {
   dotenv.config();
+
+  const emptyEnvs = checkEnvVars();
+  if (emptyEnvs.length) {
+    logger.error(`you need to configure the following vars`, emptyEnvs)
+    return Promise.reject(`you need to configure the following vars`, emptyEnvs)
+  }
+
   const staticConfig = getStaticConfig(process.env)
   const {phone_number, application_id, nexmo_account} = staticConfig;
   const {api_key, api_secret} = nexmo_account;
@@ -209,7 +211,7 @@ function startServer() {
     .then(() => bindLvnToApp({phone_number, application_id, api_key, api_secret}))
     .then(() => localDevSetup({ config: staticConfig }))
     .then(({ config }) => {
-      const app = createApp(config)
+      const app = createApp(config, conversationApiFunctionModule)
       return { config, app }
     })
     .then(({ app, config }) => listenServer({ app, config }))
@@ -220,9 +222,5 @@ function startServer() {
     })
 }
 
-const  emptyEnvs = checkEnvVars();
-if(emptyEnvs.length)
-  logger.error(`you need to configure the following vars`, emptyEnvs)
-else
-  startServer()
-    .catch(err => console.error(err))
+module.exports = startServer
+// startServer(conversationApiFunctionModule)
