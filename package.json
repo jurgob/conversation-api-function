@@ -28,6 +28,7 @@
     "nodejs-base64": "^1.0.3",
     "redis": "^3.0.2",
     "redis-mock": "^0.54.0",
+    "shelljs": "^0.8.4",
     "yargs": "^16.1.0"
   }
 }

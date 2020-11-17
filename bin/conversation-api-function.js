@@ -6,6 +6,7 @@ var path = require('path')
 const startServer = require('../src/server.js');
 const { argv } = require('process');
 const { createAppAndEnv } = require('../src/utils');
+const shell = require('shelljs');
 
 //< -a account-key > < -s account-secret > < -an application-name> 
 
@@ -17,14 +18,13 @@ const dashboard_cred_url = "https://dashboard.nexmo.com/"
 
 const { CONV_API_FUNC_API_KEY, CONV_API_FUNC_API_SECRET, CONV_API_FUNC_PHONE_NUMBER,} = process.env
 yargs(hideBin(process.argv))
-    .command('new <fn-name>', 'create a new conversation function', (yargs) => {
+    .command('new <prj_dir>', 'create a new conversation function', (yargs) => {
         return yargs
-            .example('conversation-js-function new my_func_dir -a a698c860 -s 6eb37419d0f6c497 -l 447418999066')
-            .positional('fn-name', {
-                describe: 'port to bind on',
-                default: `./my-conv-api-fn`
+            .example('conversation-js-function new prj_dir -a a698c860 -s 6eb37419d0f6c497 -l 447418999066')
+            .positional('prj_dir', {
+                describe: 'directory of the project',
             })
-            .coerce('fn-name', path.resolve)
+            // .coerce('prj_dir', path.resolve)
             .option('api-key', {
                 alias: 'a',
                 type: 'string',
@@ -45,14 +45,10 @@ yargs(hideBin(process.argv))
             })
             .check((argv, options) => {
                 const { 
-                    "fn-name" : fn_name ,
                     "api-key": api_key,
                     "api-secret": api_secret,
                     lvn,
                 } = argv
-                const isDir = fs.existsSync(fn_name) && fs.lstatSync(fn_name).isDirectory()
-                if(!isDir)
-                    throw Error(`${fn_name} is not a directory`)
 
                 if (!api_key)
                     throw Error(`api-key is mandatory, check: ${dashboard_cred_url}`)
@@ -73,13 +69,20 @@ yargs(hideBin(process.argv))
 
     }, (argv) => {
             const {
-                "fn-name": fn_name,
+                "prj_dir": fn_name,
                 "api-key": api_key,
                 "api-secret": api_secret,
                 lvn,
             } = argv
 
+            const fn_name_full = path.resolve(fn_name)
+            shell.mkdir('p', fn_name_full)
+            shell.cd(fn_name_full)
+            const from = `${__dirname}/../template/*`
+            const to = `${fn_name_full}`
+            shell.cp(from, to)
             createAppAndEnv([api_key, api_secret, lvn, `app-${fn_name}-dev`])
+
 
     })
     .command('run [file]', 'run a conversation function', (yargs) => {
