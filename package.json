@@ -1,16 +1,19 @@
 {
   "name": "vapi_hello_world",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "conversation-api-function run examples/server/index.js",
-    "first_config": "node ./install/create_env.js",
+    "first_config": "node ./bin/create_env.js",
     "cli_create_user": "node bin/cli_create_user.js $1",
     "cli_token": "node bin/cli_token.js $1"
   },
   "bin": {
     "conversation-api-function": "./bin/conversation-api-function.js"
+  },
+  "engines": {
+    "node": ">=14.15"
   },
   "author": "",
   "license": "ISC",

@@ -18,7 +18,7 @@ const storageClient = new StorageClient();
 const bodyParser = require('body-parser');
 
 
-function createApp(config, conversationApiFunctionModule) {
+function createExpressApp(config, conversationApiFunctionModule) {
 
   
   const app = express()
@@ -100,6 +100,7 @@ function localDevSetup({ config }) {
   let NGROK_URL;
   const {api_key, api_secret } = nexmo_account;
   const dev_api_token = base64encode(`${api_key}:${api_secret}`)
+  logger.info("start application registration")
   return ngrok.connect(port)
     .then((ngrok_url) => {
       NGROK_URL = ngrok_url;
@@ -151,9 +152,9 @@ function checkEnvVars(){
   if(isDev)
     dotenv.config();
 
-  let mandatoryEnvs = ["MY_NEXMO_APP_PRIVATE_KEY", "MY_NEXMO_APP_APPLICATION_ID", "MY_NEXMO_APP_APPLICATION_NAME", "MY_NEXMO_APP_API_KEY"]
+  let mandatoryEnvs = ["CONV_API_FUNC_PRIVATE_KEY", "CONV_API_FUNC_APPLICATION_ID", "CONV_API_FUNC_APPLICATION_NAME", "CONV_API_FUNC_API_KEY"]
   if(isDev)
-    mandatoryEnvs = mandatoryEnvs.concat(["MY_NEXMO_APP_API_KEY", "MY_NEXMO_APP_API_SECRET"])
+    mandatoryEnvs = mandatoryEnvs.concat(["CONV_API_FUNC_API_KEY", "CONV_API_FUNC_API_SECRET"])
 
 
   const getEmpty = (acc, cur) => {
@@ -181,18 +182,21 @@ function listenServer({ app, config }) {
 }
 
 //
-function bindLvnToApp({phone_number, application_id, api_key, api_secret}){
+async function bindLvnToApp({phone_number, application_id, api_key, api_secret}){
   //`msisdn=${phone_number}&voiceCallbackValue=${application_id}&api_key=${api_key}&api_secret=${api_secret}`
-  const data = `country=GB&msisdn=${phone_number}&moHttpUrl=&voiceCallbackType=app&voiceCallbackValue=${application_id}&api_key=${api_key}&api_secret=${api_secret}`
-  return axios({
+  const reqData = `country=GB&msisdn=${phone_number}&moHttpUrl=&voiceCallbackType=app&voiceCallbackValue=${application_id}&api_key=${api_key}&api_secret=${api_secret}`
+  const {data, status } = await axios({
         method: "POST",
         url: `https://rest.nexmo.com/number/update`,
-        data,
+        data: reqData,
         headers: { 'Content-Type': `application/x-www-form-urlencoded` }
       })
-      .then(({ data, status }) => {
-          logger.info({ data, status })
-        })
+      .catch(err => {
+        logger.error({ err }, "LVN to Application bind failed")
+        throw err;
+      })
+
+  logger.info({ data, status })
 }
 
 function startServer(conversationApiFunctionModule) {
@@ -211,7 +215,7 @@ function startServer(conversationApiFunctionModule) {
     .then(() => bindLvnToApp({phone_number, application_id, api_key, api_secret}))
     .then(() => localDevSetup({ config: staticConfig }))
     .then(({ config }) => {
-      const app = createApp(config, conversationApiFunctionModule)
+      const app = createExpressApp(config, conversationApiFunctionModule)
       return { config, app }
     })
     .then(({ app, config }) => listenServer({ app, config }))

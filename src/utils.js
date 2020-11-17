@@ -1,5 +1,8 @@
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
+const axios = require('axios');
+const { base64encode } = require('nodejs-base64');
+const fs = require('fs').promises;
 
 
 
@@ -60,26 +63,26 @@ function getStaticConfig(env) {
   const isDev = !env.NODE_ENV
   if(isDev)
     dotenv.config();
-  const { MY_NEXMO_APP_PRIVATE_KEY, MY_NEXMO_APP_APPLICATION_ID, MY_NEXMO_APP_APPLICATION_NAME, MY_NEXMO_APP_PHONE_NUMBER } = env
+  const { CONV_API_FUNC_PRIVATE_KEY, CONV_API_FUNC_APPLICATION_ID, CONV_API_FUNC_APPLICATION_NAME, CONV_API_FUNC_PHONE_NUMBER } = env
   const port = 5001
 
   let config = {
     port,
     isDev,
-    phone_number: MY_NEXMO_APP_PHONE_NUMBER,
+    phone_number: CONV_API_FUNC_PHONE_NUMBER,
     server_url_internal: `http://localhost:${port}`,
     server_url: `http://localhost:${port}`,
-    private_key: MY_NEXMO_APP_PRIVATE_KEY,
-    application_id: MY_NEXMO_APP_APPLICATION_ID,
-    application_name:MY_NEXMO_APP_APPLICATION_NAME
+    private_key: CONV_API_FUNC_PRIVATE_KEY,
+    application_id: CONV_API_FUNC_APPLICATION_ID,
+    application_name:CONV_API_FUNC_APPLICATION_NAME
   }
   if(isDev) {
-      const { MY_NEXMO_APP_API_KEY, MY_NEXMO_APP_API_SECRET } = env
+      const { CONV_API_FUNC_API_KEY, CONV_API_FUNC_API_SECRET } = env
       config = {
         ...config,
         nexmo_account: {
-          api_key:MY_NEXMO_APP_API_KEY,
-          api_secret: MY_NEXMO_APP_API_SECRET
+          api_key:CONV_API_FUNC_API_KEY,
+          api_secret: CONV_API_FUNC_API_SECRET
         }
       }
   }
@@ -88,8 +91,58 @@ function getStaticConfig(env) {
   return config
 }
 
+function createApp({ api_key, api_secret, application_name }) {
+  const dev_api_token = base64encode(`${api_key}:${api_secret}`)
+  return axios({
+    method: "POST",
+    url: `https://api.nexmo.com/v2/applications`,
+    data: {
+      "name": application_name,
+      "capabilities": {
+        "voice": {
+          "webhooks": {
+            "answer_url": {
+              "address": `https://foo.com/ncco`,
+              "http_method": "GET"
+            },
+            "event_url": {
+              "address": `https://foo.com/voiceEvent`,
+              "http_method": "POST"
+            }
+          }
+        }
+      }
+    },
+    headers: { 'Authorization': `basic ${dev_api_token}` }
+  })
+}
+
+//cli stuff...
+function createEnvFile({ applicationData, cliParams }) {
+  const [CONV_API_FUNC_API_KEY, CONV_API_FUNC_API_SECRET, CONV_API_FUNC_PHONE_NUMBER, CONV_API_FUNC_APPLICATION_NAME] = cliParams
+  const envFileContent = `
+CONV_API_FUNC_API_KEY="${CONV_API_FUNC_API_KEY}"
+CONV_API_FUNC_API_SECRET="${CONV_API_FUNC_API_SECRET}"
+CONV_API_FUNC_PHONE_NUMBER="${CONV_API_FUNC_PHONE_NUMBER}"
+CONV_API_FUNC_APPLICATION_NAME="${CONV_API_FUNC_APPLICATION_NAME}"
+CONV_API_FUNC_APPLICATION_ID="${applicationData.id}"
+CONV_API_FUNC_PRIVATE_KEY="${applicationData.keys.private_key.split("\n").join('\\n')}"
+`
+  return fs.writeFile(".env", envFileContent)
+
+}
+
+function createAppAndEnv(cliParams) {
+  const [CONV_API_FUNC_API_KEY, CONV_API_FUNC_API_SECRET, CONV_API_FUNC_PHONE_NUMBER, CONV_API_FUNC_APPLICATION_NAME] = cliParams;
+
+  return createApp({ api_key: CONV_API_FUNC_API_KEY, api_secret: CONV_API_FUNC_API_SECRET, application_name: CONV_API_FUNC_APPLICATION_NAME })
+    .then(({ data, status }) => createEnvFile({ applicationData: data, cliParams }))
+}
+
 module.exports = {
 	generateBEToken,
 	generateUserToken,
-	getStaticConfig
+  getStaticConfig,
+  createApp,
+  createAppAndEnv
 }

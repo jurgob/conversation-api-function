@@ -9,7 +9,7 @@ function sleep(ms) {
 }
 
 
-const pstnTextToSpeech = async (event, { logger, csClient, storageClient }) => {
+const pstnTextToSpeech = async (event, { logger, csClient, storageClient, generateBEToken }) => {
     try {
         const type = event.type
         const legId = event.body.channel && event.body.channel.id
@@ -29,6 +29,23 @@ const pstnTextToSpeech = async (event, { logger, csClient, storageClient }) => {
                 method: "post",
                 data: {},
             })
+
+            // await axios({
+            //     url: `${DATACENTER}/beta/conversations`,
+            //     method: "post",
+            //     data: {},
+            //     headers: {
+            //         "Authorizaion": `Bearer ${generateBEToken()}`
+            //     }
+            // })
+
+            
+
+            // const convRes = await csClient({
+            //     url: `${DATACENTER}/v0.1/messages`,
+            //     method: "post",
+            //     data: {},
+            // })
 
             const conversation_id = convRes.data.id
             const user_id = event.body.user.id
