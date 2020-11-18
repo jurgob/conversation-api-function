@@ -26,9 +26,11 @@
     "jsonwebtoken": "^8.5.1",
     "ngrok": "^3.2.5",
     "nodejs-base64": "^1.0.3",
+    "open": "^7.3.0",
     "redis": "^3.0.2",
     "redis-mock": "^0.54.0",
     "shelljs": "^0.8.4",
+    "uuid": "^8.3.1",
     "yargs": "^16.1.0"
   }
 }
