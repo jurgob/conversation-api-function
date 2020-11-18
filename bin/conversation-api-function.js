@@ -2,7 +2,7 @@
 
 const nodeVer = process.versions.node.split('.')
 const supportdVersion = '13.14.0'.split('.')
-if (nodeVer[0] > supportdVersion[0] || nodeVer[1] > supportdVersion[1] ) {
+if (nodeVer[0] < supportdVersion[0] || nodeVer[1] < supportdVersion[1] ) {
     console.log("Unsupported node version. version required:  >=v13.14.0. Please update your node installation")
     process.exit(1)
 }
@@ -95,9 +95,12 @@ yargs(hideBin(process.argv))
             const prj_dir_full = path.resolve(prj_dir)
             shell.mkdir('-p', prj_dir_full)
             shell.cd(prj_dir_full)
-            const from = `${__dirname}/../template/*`
+            const from_dir = `${__dirname}/../template`
+            const from = `${from_dir}/*`
             const to = `${prj_dir_full}`
             shell.cp(from, to)
+            shell.cp(`${from_dir}/.nvmrc`, to)
+            shell.cp(`${from_dir}/.gitignore`, to)
 
     })
     .command('config', 'open existing config file', (yargs) => {
