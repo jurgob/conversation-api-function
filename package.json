@@ -9,6 +9,10 @@
     "cli_create_user": "node bin/cli_create_user.js $1",
     "cli_token": "node bin/cli_token.js $1"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jurgob/conversation-api-function.git"
+  },
   "bin": {
     "conversation-api-function": "./bin/conversation-api-function.js"
   },
