@@ -1,4 +1,12 @@
 #!/usr/bin/env node
+
+const nodeVer = process.versions.node.split('.')
+const supportdVersion = '13.14.0'.split('.')
+if (nodeVer[0] > supportdVersion[0] || nodeVer[1] > supportdVersion[1] ) {
+    console.log("Unsupported node version. version required:  >=v13.14.0. Please update your node installation")
+    process.exit(1)
+}
+
 const yargs = require('yargs/yargs')
 const { hideBin } = require('yargs/helpers')
 const fs = require('fs');
@@ -162,7 +170,6 @@ yargs(hideBin(process.argv))
 
                 const filePath = path.resolve(prj_dir, fileName);
 
-                console.log('FILE PATH: ', filePath)
                 const isFile = fs.lstatSync(filePath).isFile() 
                 return isFile
             })
