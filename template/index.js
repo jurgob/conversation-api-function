@@ -31,8 +31,77 @@ const {
  * @param {object} event - this is a conversation api event. Find the list of the event here: https://jurgob.github.io/conversation-service-docs/#/customv3
  * @param {object} nexmo - see the context section above
  * */
-const rtcEvent = async (event, { logger }) => {
-    logger.info(`Hello Event! ${event.type}`)
+
+const DATACENTER = `https://api-eu.nexmo.com` //  use https://api.nexmo.com if your lvn is in US
+
+const rtcEvent = async (event, { logger, csClient }) => {
+
+    try { 
+        const type = event.type
+        if (type === 'app:knocking') { /* I m receiving a knocker, it means someone is trying to enstiblish a call  */
+            const knocking_id = event.from
+            
+            /* create a conversation */
+            const channel = event.body.channel
+            const convRes = await csClient({
+                url: `${DATACENTER}/beta/conversations`,
+                method: "post",
+                data: {},
+            })
+
+            const conversation_id = convRes.data.id
+            const user_id = event.body.user.id
+
+            /* join the user created by the knocker in the conversation  aka we join the caller to the conversation we have just created */
+            const memberRes = await csClient({
+                url: `${DATACENTER}/beta/conversations/${conversation_id}/members`,
+                method: "post",
+                data: {
+                    user_id: user_id,
+                    knocking_id: knocking_id,
+                    action: "join",
+                    channel: {
+                        type: channel.type,
+                        id: channel.id,
+                        to: channel.to,
+                        from: channel.from,
+                        "preanswer": false
+                    },
+                    "media": {
+                        "audio": {
+                            "earmuffed": false,
+                            "muted": false
+                        }
+                    }
+
+                }
+            })
+
+        } else if (type === 'member:media' && (event.body.media && event.body.media.audio === true)) { /* the member as the audio enabled */
+            const legId = event.body.channel.id
+
+            /* we send a text to speech action to the conversation */
+            await csClient({
+                url: `${DATACENTER}/v0.1/legs/${legId}/talk`,
+                method: "put",
+                data: { "loop": 1, "text": "Hello, have a nice day! ", "level": 0, "voice_name": "Kimberly" },
+            })
+
+        } else if (type == 'audio:say:done'){ /* the text to speech is finished */
+            /* we hangup the call */
+            const legId = event.body.channel.id
+            await csClient({
+                url: `${DATACENTER}/v0.1/legs/${legId}`,
+                method: "put",
+                data: { "action": "hangup", "uuid": legId }
+            })
+
+        }
+
+    } catch (err) {
+        logger.error("Error on rtcEvent function", err)
+    }
+    
 }
 
 

@@ -76,7 +76,7 @@ const pstnTextToSpeech = async (event, { logger, csClient, storageClient }) => {
             await csClient({
                 url: `${DATACENTER}/v0.1/legs/${legId}/talk`,
                 method: "put",
-                data: { "loop": 1, "text": "Hello, have a nice day! ", "level": 0, "voice_name": "Kimberly" },
+                data: { "loop": 1, "text": "Hello World! ", "level": 0, "voice_name": "Kimberly" },
             })
 
             await sleep(1000)
@@ -86,6 +86,8 @@ const pstnTextToSpeech = async (event, { logger, csClient, storageClient }) => {
                 method: "put",
                 data: { "action": "hangup", "uuid": legId }
             })
+
+        } else if (type === 'audio:say:done') { /* the text to speech is finished */
 
         }
 
