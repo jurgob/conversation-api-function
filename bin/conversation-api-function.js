@@ -18,6 +18,7 @@ const shell = require('shelljs');
 const os = require('os');
 const { v4 } = require('uuid');
 const open = require('open');
+const pjson = require('../package.json');
 
 
 //< -a account-key > < -s account-secret > < -an application-name> 
@@ -100,7 +101,10 @@ yargs(hideBin(process.argv))
             const to = `${prj_dir_full}`
             shell.cp(from, to)
             shell.cp(`${from_dir}/.nvmrc`, to)
-            shell.cp(`${from_dir}/.gitignore`, to)
+            shell.cp(`${from_dir}/gitignore`, `${to}/.gitignore`)
+            shell.cp(`${from_dir}/.storageclient.dumb.json`, `${to}/.storageclient.dumb.json`)
+                
+            shell.rm(`${to}/gitignore`)
 
     })
     .command('config', 'open existing config file', (yargs) => {
@@ -187,11 +191,8 @@ yargs(hideBin(process.argv))
         startServer(userModule)
 
     })
-    .option('verbose', {
-        alias: 'v',
-        type: 'boolean',
-        description: 'Run with verbose logging'
-    })
+    .version('version', pjson.version) // the version string.
+    .alias('version', 'v')
     .strict()
     .strictCommands()
     .demandCommand(1)
