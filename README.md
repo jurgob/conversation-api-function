@@ -31,7 +31,10 @@ To make this app running, you need
 
 ``` conversation-api-function run my_capi_fn ```
 
-open the following file ``` my_capi_fn/index.js ```
+now call you lvn, you should hear an "hello world" mesage
+
+
+open the following file ``` my_capi_fn/index.js ``` for more info
 
 
 ## further docs:
