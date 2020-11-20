@@ -6,18 +6,30 @@ this is a cli tool that will allow you to write simple application for the Vonag
 
 
 
-# INSTALL
 
 
 
-## prerequisites
 
+## install prerequisites
+
+
+### nexmo credentials
 To make this app running, you need 
  - a nexmo api key, api secret : https://dashboard.nexmo.com
  - a nexmo lvn (you are gonna put it in NEXMO_LVN) : https://dashboard.nexmo.com/buy-numbers
 
+### install node 14+
+suggested way to install node is via nvm (https://github.com/nvm-sh/nvm/pulls). so: 
 
+```  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.0/install.sh | bash ```
 
+then run: 
+
+``` nvm install 14 ```
+
+# install
+
+```npm install -g conversation-api-function ```
 
 ## first time config
 
