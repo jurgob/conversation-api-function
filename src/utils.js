@@ -63,20 +63,19 @@ function getStaticConfig(env) {
   const isDev = !env.NODE_ENV
   if(isDev)
     dotenv.config();
-  const { CONV_API_FUNC_PRIVATE_KEY, CONV_API_FUNC_APPLICATION_ID, CONV_API_FUNC_APPLICATION_NAME, CONV_API_FUNC_PHONE_NUMBER } = env
-  const port = 5001
+  const { CONV_API_FUNC_PRIVATE_KEY, CONV_API_FUNC_APPLICATION_ID, CONV_API_FUNC_APPLICATION_NAME, CONV_API_FUNC_PHONE_NUMBER, CONV_API_FUNC_SERVER_URL, CONV_API_FUNC_PORT } = env
+  const port = CONV_API_FUNC_PORT || 5001
 
   let config = {
     port,
     isDev,
     phone_number: CONV_API_FUNC_PHONE_NUMBER,
-    server_url_internal: `http://localhost:${port}`,
-    server_url: `http://localhost:${port}`,
+    server_url: CONV_API_FUNC_SERVER_URL,
     private_key: CONV_API_FUNC_PRIVATE_KEY,
     application_id: CONV_API_FUNC_APPLICATION_ID,
     application_name:CONV_API_FUNC_APPLICATION_NAME
   }
-  if(isDev) {
+  // if(isDev) {
       const { CONV_API_FUNC_API_KEY, CONV_API_FUNC_API_SECRET } = env
       config = {
         ...config,
@@ -85,7 +84,7 @@ function getStaticConfig(env) {
           api_secret: CONV_API_FUNC_API_SECRET
         }
       }
-  }
+  // }
 
 
   return config

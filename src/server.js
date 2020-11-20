@@ -87,9 +87,8 @@ function createExpressApp(config, conversationApiFunctionModule) {
 
 
 
-
-function localDevSetup({ config }) {
-  const { port, application_id, application_name, nexmo_account,isDev } = config;
+async function localDevSetup ({ config }) {
+  const { port, application_id, application_name, nexmo_account,isDev, server_url } = config;
 
   if(!isDev)
   return Promise.resolve({
@@ -97,53 +96,58 @@ function localDevSetup({ config }) {
   });
 
   const ngrok = require('ngrok');
-  let NGROK_URL;
   const {api_key, api_secret } = nexmo_account;
   const dev_api_token = base64encode(`${api_key}:${api_secret}`)
   logger.info("start application registration")
-  return ngrok.connect(port)
-    .then((ngrok_url) => {
-      NGROK_URL = ngrok_url;
-      return axios({
-        method: "PUT",
-        url: `https://api.nexmo.com/v2/applications/${application_id}`,
-        data: {
-          "name": application_name,
-          "capabilities": {
-            // "voice": {
-            //   "webhooks": {
-            //     "answer_url": {
-            //       "address": `${ngrok_url}/ncco`,
-            //       "http_method": "GET"
-            //     },
-            //     "event_url": {
-            //       "address": `${ngrok_url}/voiceEvent`,
-            //       "http_method": "POST"
-            //     }
-            //   }
-            // },
-            "rtc": {
-              "params": {"dog": "cane"},
-              "webhooks": {
-                "event_url": {
-                  "address": `${ngrok_url}/rtcEvent`,
-                  "http_method": "POST"
-                }
-              }
+  
+  let webhooks_url = server_url 
+
+  if (!server_url){
+    webhooks_url = await ngrok.connect(port)
+    logger.info("ngrok spinned up locally", { ngrok_url: webhooks_url })
+  } else {
+    webhooks_url = server_url
+  }
+
+  const { data, status } =  await axios({
+    method: "PUT",
+    url: `https://api.nexmo.com/v2/applications/${application_id}`,
+    data: {
+      "name": application_name,
+      "capabilities": {
+        // "voice": {
+        //   "webhooks": {
+        //     "answer_url": {
+        //       "address": `${ngrok_url}/ncco`,
+        //       "http_method": "GET"
+        //     },
+        //     "event_url": {
+        //       "address": `${ngrok_url}/voiceEvent`,
+        //       "http_method": "POST"
+        //     }
+        //   }
+        // },
+        "rtc": {
+          "webhooks": {
+            "event_url": {
+              "address": `${webhooks_url}/rtcEvent`,
+              "http_method": "POST"
             }
           }
-        },
-        headers: { 'Authorization': `basic ${dev_api_token}` }
-      }).then(({ data, status }) => {
-        logger.info("localDevSetup App Registration*", { data, status, capabilities: data.capabilities })
-        })
-    })
-    .then(() => ({
-      config: {
-        ...config,
-        server_url: NGROK_URL
+        }
       }
-    }))
+    },
+    headers: { 'Authorization': `basic ${dev_api_token}` }
+  })
+  
+  logger.info("localDevSetup App Registration*", { data, status, capabilities: data.capabilities })
+      
+  return {
+    config: {
+      ...config,
+      server_url: webhooks_url
+    }
+  }
 }
 
 
@@ -153,8 +157,8 @@ function checkEnvVars(){
     dotenv.config();
 
   let mandatoryEnvs = ["CONV_API_FUNC_PRIVATE_KEY", "CONV_API_FUNC_APPLICATION_ID", "CONV_API_FUNC_APPLICATION_NAME", "CONV_API_FUNC_API_KEY"]
-  if(isDev)
-    mandatoryEnvs = mandatoryEnvs.concat(["CONV_API_FUNC_API_KEY", "CONV_API_FUNC_API_SECRET"])
+  // if(isDev)
+  mandatoryEnvs = mandatoryEnvs.concat(["CONV_API_FUNC_API_KEY", "CONV_API_FUNC_API_SECRET"])
 
 
   const getEmpty = (acc, cur) => {
