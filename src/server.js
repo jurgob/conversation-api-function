@@ -90,10 +90,10 @@ function createExpressApp(config, conversationApiFunctionModule) {
 async function localDevSetup ({ config }) {
   const { port, application_id, application_name, nexmo_account,isDev, server_url } = config;
 
-  if(!isDev)
-  return Promise.resolve({
-    config
-  });
+  // if(!isDev)
+  // return Promise.resolve({
+  //   config
+  // });
 
   const ngrok = require('ngrok');
   const {api_key, api_secret } = nexmo_account;
