@@ -64,7 +64,13 @@ function getStaticConfig(env) {
   if(isDev)
     dotenv.config();
   const { CONV_API_FUNC_PRIVATE_KEY, CONV_API_FUNC_APPLICATION_ID, CONV_API_FUNC_APPLICATION_NAME, CONV_API_FUNC_PHONE_NUMBER, CONV_API_FUNC_SERVER_URL, CONV_API_FUNC_PORT } = env
-  const port = CONV_API_FUNC_PORT || 5001
+  
+  let port = 5001
+  if (CONV_API_FUNC_PORT) {
+    port = CONV_API_FUNC_PORT
+  } else if(process.env.PORT) {
+    port = PORT
+  }
 
   let config = {
     port,
@@ -117,7 +123,8 @@ function createApp({ api_key, api_secret, application_name }) {
 }
 
 //cli stuff...
-function createEnvFile({ applicationData, cliParams }) {
+function createEnvFile({ applicationData, cliParams, fileName }) {
+  fileName = fileName ? fileName : ".env"
   const [CONV_API_FUNC_API_KEY, CONV_API_FUNC_API_SECRET, CONV_API_FUNC_PHONE_NUMBER, CONV_API_FUNC_APPLICATION_NAME] = cliParams
   const envFileContent = `
 CONV_API_FUNC_API_KEY="${CONV_API_FUNC_API_KEY}"
@@ -127,15 +134,15 @@ CONV_API_FUNC_APPLICATION_NAME="${CONV_API_FUNC_APPLICATION_NAME}"
 CONV_API_FUNC_APPLICATION_ID="${applicationData.id}"
 CONV_API_FUNC_PRIVATE_KEY="${applicationData.keys.private_key.split("\n").join('\\n')}"
 `
-  return fs.writeFile(".env", envFileContent)
+  return fs.writeFile(fileName, envFileContent)
 
 }
 
-function createAppAndEnv(cliParams) {
+function createAppAndEnv(cliParams, fileName) {
   const [CONV_API_FUNC_API_KEY, CONV_API_FUNC_API_SECRET, CONV_API_FUNC_PHONE_NUMBER, CONV_API_FUNC_APPLICATION_NAME] = cliParams;
 
   return createApp({ api_key: CONV_API_FUNC_API_KEY, api_secret: CONV_API_FUNC_API_SECRET, application_name: CONV_API_FUNC_APPLICATION_NAME })
-    .then(({ data, status }) => createEnvFile({ applicationData: data, cliParams }))
+    .then(({ data, status }) => createEnvFile({ applicationData: data, cliParams, fileName }))
 }
 
 module.exports = {

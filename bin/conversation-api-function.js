@@ -140,30 +140,41 @@ yargs(hideBin(process.argv))
         createAppAndEnv([api_key, api_secret, lvn, `local-test-capi-fn-${v4()}`])
 
     })
-    // .command('new <prj_dir>', 'create a new conversation function', (yargs) => {
-    //     return createAppArgs (yargs)
-    //         .example('conversation-api-function new prj_dir -a a698c860 -s 6eb37419d0f6c497 -l 447418999066')
-    //         .positional('prj_dir', {
-    //             describe: 'directory of the project',
-    //         })
-    // }, (argv) => {
-    //         const {
-    //             "prj_dir": fn_name,
-    //             "api-key": api_key,
-    //             "api-secret": api_secret,
-    //             lvn,
-    //         } = argv
+    .command('deploy-new <prj_dir>', 'first-time config setup, it s gonna crete a nexmo application for dev porpouse and is gonna configure it for the cli', (yargs) => {
+        return createAppArgs(yargs)
+            .example('conversation-api-function config-new -a a698c860 -s 6eb37419d0f6c497 -l 447418999066')
+            .positional('prj_dir', {
+                describe: 'js file where you are exporting your handlers'
+            })
+            .check((argv, options) => {
+                const { prj_dir } = argv;
+                const dir = prj_dir ? prj_dir : process.cwd();
+                const fileName = './index.js'
 
-    //         const fn_name_full = path.resolve(fn_name)
-    //         shell.mkdir('p', fn_name_full)
-    //         shell.cd(fn_name_full)
-    //         const from = `${__dirname}/../template/*`
-    //         const to = `${fn_name_full}`
-    //         shell.cp(from, to)
-    //         createAppAndEnv([api_key, api_secret, lvn, `app-${fn_name}-dev`])
+                const filePath = path.resolve(prj_dir, fileName);
 
+                const isFile = fs.lstatSync(filePath).isFile()
+                if (!isFile)
+                    throw new Error(`${prj_dir} is not a directory or a vaild project`)
 
-    // })
+                return isFile
+            })
+
+    }, async (argv) => {
+        const {
+            "api-key": api_key,
+            "api-secret": api_secret,
+            prj_dir,
+            lvn,
+        } = argv
+
+        shell.cd(prj_dir)
+        const envFileName = '.env.prod'
+        const prj_dir_name = process.cwd().split('/').slice(-1)[0]
+        shell.touch(envFileName)
+        await createAppAndEnv([api_key, api_secret, lvn, `prod-capi-fn-${prj_dir_name}-${v4()}`], envFileName)
+
+    })
     .command('run [prj_dir]', 'run a conversation function', (yargs) => {
         yargs
             .positional('prj_dir', {
