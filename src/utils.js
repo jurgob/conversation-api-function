@@ -69,7 +69,7 @@ function getStaticConfig(env) {
   if (CONV_API_FUNC_PORT) {
     port = CONV_API_FUNC_PORT
   } else if(process.env.PORT) {
-    port = PORT
+    port = process.env.PORT
   }
 
   let config = {
