@@ -96,11 +96,22 @@ git push heroku main
 if you look the app logs with ```heroku logs``` you will see that's the app is failing. that's becouse you need to configure the env vars. An easy way is the following: 
 
 ```
+
 cat .env.prod | grep -v PRIVATE_KEY | xargs heroku config:set
+
+# set private key
 PRIVATE_KEY="`cat .env.prod | grep PRIVATE_KEY | cut -c 27-`"
+echo -e $PRIVATE_KEY > private.key
 heroku config:set CONV_API_FUNC_PRIVATE_KEY="$PRIVATE_KEY"
+
+# set webhook url
 heroku config:set CONV_API_FUNC_SERVER_URL="https://my_capi_heroku_app.herokuapp.com"
+
+now go to `https://my_capi_heroku_app.herokuapp.com/hello` to check is working
+
 ```
+
+
 
 
 
