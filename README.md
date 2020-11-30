@@ -71,13 +71,13 @@ p.s. bunyan is producing standard json, so you can also use standard unix tools 
 ## deploy in production
 
 ### create deployment credentials
-from the project directory, run the following command: 
+0) from the project directory, run the following command: 
 ```conversation-api-function run .  ```
 
 this is gonna create a `.env.prod` file with the credential to go live
 
 ### deploy in heroku. 
-after you have created a deployment credentials, for the first thing you need to init your project on git: 
+1) after you have created a deployment credentials, for the first thing you need to init your project on git: 
 ```
 git init
 git add -A
@@ -85,15 +85,18 @@ git commit -m 'first commit'
 
 ```
 
-then you can create an heroku app (be sure you have an heroku account:  https://dashboard.heroku.com/apps)
+2) be sure you have an heroku account:  https://dashboard.heroku.com/apps
+
+3) insatall the heroku cli with ```npm install -g heroku```
+
+4) then you can dowcreate an heroku app :
 
 ```
-npm install -g heroku
 heroku login
 heroku apps:create my_capi_heroku_app
 ```
 
-now you can finally push the app live.
+5) now you can finally push the app live.
 ```
 git push heroku main
 ```
@@ -101,7 +104,6 @@ git push heroku main
 if you look the app logs with ```heroku logs``` you will see that's the app is failing. that's becouse you need to configure the env vars. An easy way is the following: 
 
 ```
-
 cat .env.prod | grep -v PRIVATE_KEY | xargs heroku config:set
 
 # set private key
@@ -111,10 +113,11 @@ heroku config:set CONV_API_FUNC_PRIVATE_KEY="$PRIVATE_KEY"
 
 # set webhook url
 heroku config:set CONV_API_FUNC_SERVER_URL="https://my_capi_heroku_app.herokuapp.com"
-
-now go to `https://my_capi_heroku_app.herokuapp.com/hello` to check is working
-
 ```
+
+6) now go to `https://my_capi_heroku_app.herokuapp.com/hello` to check is working
+
+
 
 
 
