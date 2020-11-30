@@ -16,7 +16,7 @@ this is a cli tool that will allow you to write simple application for the Vonag
 ### nexmo credentials
 To make this app running, you need 
  - a nexmo api key, api secret : https://dashboard.nexmo.com
- - a nexmo lvn (you are gonna put it in NEXMO_LVN) : https://dashboard.nexmo.com/buy-numbers
+ - a nexmo phone number (also known as LVN, Long Virtual Number) : https://dashboard.nexmo.com/buy-numbers
 
 ### install node 14+
 suggested way to install node is via nvm (https://github.com/nvm-sh/nvm/pulls). so: 
