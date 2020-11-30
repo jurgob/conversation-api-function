@@ -1,6 +1,6 @@
 
 /** we use cs in europe as far as the LVN is in UK */
-const DATACENTER = `https://api-eu-1.nexmo.com`
+const DATACENTER = `https://api.nexmo.com`
 //const DATACENTER = `https://api.nexmo.com`
 
 /**
