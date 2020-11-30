@@ -33,7 +33,12 @@ then run:
 
 ## first time config
 
-```conversation-api-function config-new -a a698c860 -s 6eb37419d0f6c497 -l 447418999066```
+the first time you run this, you need to have your api-key, api-secret and an lvn (look the prerequisites section above):
+
+```conversation-api-function config-new -a <api-key> -s <api-secret> -l <lvn>```
+
+if you struggle with this, run: 
+```conversation-api-function config-new -h```
 
 ## create a new conversation function
 
