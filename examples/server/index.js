@@ -2,8 +2,8 @@
 const handler = require('./example/pstn_inbound_asr');
 // const handler = {}
 
-const CS_URL = `https://api-eu-1.nexmo.com`
-const WS_URL = `https://ws-eu-1.nexmo.com`
+const CS_URL = `https://api-eu-2.nexmo.com`
+const WS_URL = `https://ws-eu-2.nexmo.com`
 
 
 /** const {

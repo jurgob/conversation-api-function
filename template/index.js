@@ -32,7 +32,7 @@ const {
  * @param {object} nexmo - see the context section above
  * */
 
-const DATACENTER = `https://api-eu.nexmo.com` //  use https://api.nexmo.com if your lvn is in US
+const DATACENTER = `https://api.nexmo.com` 
 
 const rtcEvent = async (event, { logger, csClient }) => {
 
@@ -44,7 +44,7 @@ const rtcEvent = async (event, { logger, csClient }) => {
             /* create a conversation */
             const channel = event.body.channel
             const convRes = await csClient({
-                url: `${DATACENTER}/beta/conversations`,
+                url: `${DATACENTER}/v0.3/conversations`,
                 method: "post",
                 data: {},
             })
@@ -54,12 +54,14 @@ const rtcEvent = async (event, { logger, csClient }) => {
 
             /* join the user created by the knocker in the conversation  aka we join the caller to the conversation we have just created */
             const memberRes = await csClient({
-                url: `${DATACENTER}/beta/conversations/${conversation_id}/members`,
+                url: `${DATACENTER}/v0.3/conversations/${conversation_id}/members`,
                 method: "post",
                 data: {
-                    user_id: user_id,
+                    user:    {
+                        id: user_id
+                    } ,
                     knocking_id: knocking_id,
-                    action: "join",
+                    state: "joined",
                     channel: {
                         type: channel.type,
                         id: channel.id,
@@ -68,10 +70,7 @@ const rtcEvent = async (event, { logger, csClient }) => {
                         "preanswer": false
                     },
                     "media": {
-                        "audio": {
-                            "earmuffed": false,
-                            "muted": false
-                        }
+                        "audio": true
                     }
 
                 }
@@ -82,8 +81,8 @@ const rtcEvent = async (event, { logger, csClient }) => {
 
             /* we send a text to speech action to the conversation */
             await csClient({
-                url: `${DATACENTER}/v0.1/legs/${legId}/talk`,
-                method: "put",
+                url: `${DATACENTER}/v0.3/legs/${legId}/talk`,
+                method: "post",
                 data: { "loop": 1, "text": "Hello, have a nice day! ", "level": 0, "voice_name": "Kimberly" },
             })
 
@@ -99,7 +98,8 @@ const rtcEvent = async (event, { logger, csClient }) => {
         }
 
     } catch (err) {
-        logger.error("Error on rtcEvent function", err)
+        
+        logger.error("Error on rtcEvent function")
     }
     
 }
