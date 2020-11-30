@@ -1,6 +1,6 @@
 {
   "name": "conversation-api-function",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "conversation-api-function is an opnionated tool to start using vonage conversation api https://developer.nexmo.com/conversation ",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
