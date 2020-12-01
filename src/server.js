@@ -11,7 +11,7 @@ var cors = require('cors');
 
 //const redis = require("redis");
 const StorageClient = require('./storageClient');
-const storageClient = new StorageClient();
+
 
 // const conversationApiFunctionModule = require('../hosted_code/server');
 
@@ -24,7 +24,7 @@ function createExpressApp(config, conversationApiFunctionModule) {
   const app = express()
   app.use(bodyParser.json())
   app.use(cors())
-
+  const storageClient = new StorageClient(config);
 
   app.use((req, res, next) => {
     const { query, baseUrl, originalUrl, url, method, statusCode, body } = req

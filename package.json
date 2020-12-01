@@ -5,9 +5,15 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "conversation-api-function run examples/server/index.js",
+    "test": "jest",
     "first_config": "node ./bin/create_env.js",
     "cli_create_user": "node bin/cli_create_user.js $1",
     "cli_token": "node bin/cli_token.js $1"
+  },
+  "jest": {
+    "testPathIgnorePatterns": [
+      "examples/*"
+    ]
   },
   "repository": {
     "type": "git",
@@ -36,5 +42,8 @@
     "shelljs": "^0.8.4",
     "uuid": "^8.3.1",
     "yargs": "^16.1.0"
+  },
+  "devDependencies": {
+    "jest": "^26.6.3"
   }
 }
