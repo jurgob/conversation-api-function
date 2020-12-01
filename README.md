@@ -67,6 +67,41 @@ if you install bunyan ( ```npm install -g bunyan ``` ) then you can run:
 
 p.s. bunyan is producing standard json, so you can also use standard unix tools like jq to format the logs: `tail -f vapi_hello_world.log | jq`
 
+## Examples
+
+Once you have configured conversation-api-functions, you can run every project without configuring this tools again. 
+Here are some examples you can run just coloning it and executing it with the following commans: 
+
+downloding / installing the repo:
+```
+git clone <GIT_REPO> <MY_DIR>
+cd <MY_DIR>
+nvm use
+npm install
+```
+then run it with: 
+
+```  conversation-api-function run <MY_DIR>```
+
+
+e.g: 
+```
+git clone https://github.com/jurgob/phone_inbound_asr my_capi_fn
+cd my_capi_fn
+nvm use
+npm install
+conversation-api-function run .
+
+```
+
+### Examples 
+
+- title: Automatic Speech Recognition
+
+  git_repo: ```https://github.com/jurgob/phone_inbound_asr```
+  
+  description: Call a number and trascribe your voice
+
 
 ## deploy in production
 
@@ -89,7 +124,7 @@ git commit -m 'first commit'
 
 3) insatall the heroku cli with ```npm install -g heroku```
 
-4) then you can dowcreate an heroku app :
+4) then you can create an heroku app :
 
 ```
 heroku login
