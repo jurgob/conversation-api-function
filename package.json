@@ -3,9 +3,8 @@
   "version": "0.0.9",
   "description": "conversation-api-function is an opnionated tool to start using vonage conversation api https://developer.nexmo.com/conversation ",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "conversation-api-function run examples/server/index.js",
     "test": "jest",
+    "start": "conversation-api-function run examples/server/index.js",
     "first_config": "node ./bin/create_env.js",
     "cli_create_user": "node bin/cli_create_user.js $1",
     "cli_token": "node bin/cli_token.js $1"

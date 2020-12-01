@@ -24,7 +24,8 @@ function createExpressApp(config, conversationApiFunctionModule) {
   const app = express()
   app.use(bodyParser.json())
   app.use(cors())
-  const storageClient = new StorageClient(config);
+  const {application_id, redis_url} = config
+  const storageClient = new StorageClient({ application_id, redis_url});
 
   app.use((req, res, next) => {
     const { query, baseUrl, originalUrl, url, method, statusCode, body } = req

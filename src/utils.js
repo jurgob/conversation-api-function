@@ -63,7 +63,7 @@ function getStaticConfig(env) {
   const isDev = !env.NODE_ENV
   if(isDev)
     dotenv.config();
-  const { CONV_API_FUNC_PRIVATE_KEY, CONV_API_FUNC_APPLICATION_ID, CONV_API_FUNC_APPLICATION_NAME, CONV_API_FUNC_PHONE_NUMBER, CONV_API_FUNC_SERVER_URL, CONV_API_FUNC_PORT } = env
+  const { CONV_API_FUNC_PRIVATE_KEY, CONV_API_FUNC_APPLICATION_ID, CONV_API_FUNC_APPLICATION_NAME, CONV_API_FUNC_PHONE_NUMBER, CONV_API_FUNC_SERVER_URL, CONV_API_FUNC_PORT, CONV_API_FUNC_REDIS_URL } = env
   
   let port = 5001
   if (CONV_API_FUNC_PORT) {
@@ -79,18 +79,17 @@ function getStaticConfig(env) {
     server_url: CONV_API_FUNC_SERVER_URL,
     private_key: CONV_API_FUNC_PRIVATE_KEY,
     application_id: CONV_API_FUNC_APPLICATION_ID,
-    application_name:CONV_API_FUNC_APPLICATION_NAME
+    application_name:CONV_API_FUNC_APPLICATION_NAME,
+    redis_url: CONV_API_FUNC_REDIS_URL
   }
-  // if(isDev) {
-      const { CONV_API_FUNC_API_KEY, CONV_API_FUNC_API_SECRET } = env
-      config = {
-        ...config,
-        nexmo_account: {
-          api_key:CONV_API_FUNC_API_KEY,
-          api_secret: CONV_API_FUNC_API_SECRET
-        }
-      }
-  // }
+  const { CONV_API_FUNC_API_KEY, CONV_API_FUNC_API_SECRET } = env
+  config = {
+    ...config,
+    nexmo_account: {
+      api_key:CONV_API_FUNC_API_KEY,
+      api_secret: CONV_API_FUNC_API_SECRET
+    }
+  }
 
 
   return config

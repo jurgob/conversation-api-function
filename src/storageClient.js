@@ -1,8 +1,10 @@
-const redis = require("redis-mock")
+const redisMock = require("redis-mock")
+const redisReal = require("redis");
+
 const { promisify } = require("util");
 
-function StorageClient({ application_id }) {
-    const storageClient = redis.createClient();
+function StorageClient({ application_id, redis_url }) {
+    const storageClient = redis_url ? redisReal.createClient(redis_url) : redisMock.createClient();
 
     const promisifyMethod = (method) => promisify(storageClient[method]).bind(storageClient)
 
