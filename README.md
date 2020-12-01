@@ -103,6 +103,28 @@ conversation-api-function run .
   description: Call a number and trascribe your voice
 
 
+## Use a Real Redis
+
+by default the storage client is saving your data in-memory, so every time you restart you loose al your data. 
+To use a real redis server instead, you just need to set the env var CONV_API_FUNC_REDIS_URL.
+See the example below for more details
+
+### use a docker redis for local deployment
+
+be sure you have installed docker
+to install redis in your local host, you just need to run: 
+```docker run --name capifn-redis -p 6379:6379 -d redis```
+
+
+now open your config runnig ```conversation-api-function config```
+this is gonna open an editor with your configs. Add this line: 
+``` 
+CONV_API_FUNC_REDIS_URL="redis://localhost:6379"
+```
+ 
+
+
+
 ## deploy in production
 
 ### create deployment credentials
