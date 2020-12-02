@@ -20,12 +20,7 @@ const { v4 } = require('uuid');
 const open = require('open');
 const pjson = require('../package.json');
 
-
-//< -a account-key > < -s account-secret > < -an application-name> 
-
-//  <-s account-secret> <-lvn long-virtual-number> <-an application-name>
-
-
+shell.config.silent = true
 
 const dashboard_cred_url = "https://dashboard.nexmo.com/"
 
@@ -101,9 +96,7 @@ yargs(hideBin(process.argv))
             const to = `${prj_dir_full}`
             shell.cp(from, to)
             shell.cp(`${from_dir}/.nvmrc`, to)
-            shell.cp(`${from_dir}/gitignore`, `${to}/.gitignore`)
-            shell.cp(`${from_dir}/.storageclient.dumb.json`, `${to}/.storageclient.dumb.json`)
-                
+            shell.cp(`${from_dir}/gitignore`, `${to}/.gitignore`)                
             shell.rm(`${to}/gitignore`)
 
     })
