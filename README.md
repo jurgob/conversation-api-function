@@ -98,7 +98,7 @@ conversation-api-function run .
 
 - **Automatic Speech Recognition**
 
-  git_repo: ```https://github.com/jurgob/phone_inbound_asr```
+  git_repo: https://github.com/jurgob/phone_inbound_asr
   
   description: Call a number and trascribe your voice
 
