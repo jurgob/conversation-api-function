@@ -96,13 +96,13 @@ conversation-api-function run .
 
 ### Examples 
 
-- title: Automatic Speech Recognition
+- **Automatic Speech Recognition**
 
   git_repo: ```https://github.com/jurgob/phone_inbound_asr```
   
   description: Call a number and trascribe your voice
 
-- title: react example
+- **UI react example**
 
   git_repo: https://github.com/jurgob/react_client_example
 
