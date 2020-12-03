@@ -102,6 +102,12 @@ conversation-api-function run .
   
   description: Call a number and trascribe your voice
 
+- title: react example
+
+  git_repo: https://github.com/jurgob/react_client_example
+
+  description: a very ugly react interface (genereated using react-create-app) for debuging ip calls. (aka calls from your browser). There's also simple login/subscribe mechanism.
+
 
 ## Use a Real Redis
 
