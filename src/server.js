@@ -69,7 +69,7 @@ function createExpressApp(config, conversationApiFunctionModule) {
     next()
   })
   
-  conversationApiFunctionModule.route(app)
+  conversationApiFunctionModule.route(app, express)
 
   app.get('/ping', (req, res) => res.json({ success: true}))
   app.post('/voiceEvent', (req, res) => res.json({ body: req.body }))
