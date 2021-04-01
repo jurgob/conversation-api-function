@@ -17,6 +17,16 @@ const StorageClient = require('./storageClient');
 
 const bodyParser = require('body-parser');
 
+const handlerCapabilitiesConfig = {
+  rtcEvent: { group: "rtc", name: "event_url" },
+  voiceAnswer: { group: "voice", name: "answer_url" },
+  voiceEvent: { group: "voice", name: "event_url" },
+  messagesInbound: { group: "messages", name: "inbound_url" },
+  messagesStatus: { group: "messages", name: "status_url" }
+}
+
+const webhookUrlPrefix = 'webhook'
+
 
 function createExpressApp(config, conversationApiFunctionModule) {
 
@@ -66,35 +76,45 @@ function createExpressApp(config, conversationApiFunctionModule) {
       csClient,
       storageClient
     }
-    next()
+    next()  
   })
   
-  conversationApiFunctionModule.route(app, express)
+  app.get('/ping', (req, res) => res.json({ success: true }))
 
-  app.get('/ping', (req, res) => res.json({ success: true}))
-  app.post('/voiceEvent', (req, res) => res.json({ body: req.body }))
-  app.post('/rtcEvent', async (req, res) => {
-    const { query, baseUrl, originalUrl, url, method, statusCode, body } = req
-    
-    logger.info({ query, baseUrl, originalUrl, url, method, statusCode, body }, "RTC Event Received <-")
-    res.json({ body: req.body })
+  if (typeof conversationApiFunctionModule.route ==='function' ){
+    conversationApiFunctionModule.route(app, express)
+  }
 
-    const event = req.body
-    await conversationApiFunctionModule.rtcEvent(event, req.nexmo)
-  })
+  //application hanler register application webhooks 
+  Object.keys(conversationApiFunctionModule)
+    .filter((funcName) => !['route', 'rtcEvent'].includes(funcName))
+    .forEach((funcName) => {
+      app.post(`/${webhookUrlPrefix}/${funcName}`, async (req, res, next) => conversationApiFunctionModule[funcName](req, res, next) )
+    })
+
+  //application hanler register rtcEvent
+  if (typeof conversationApiFunctionModule.rtcEvent === 'function'){
+    app.post(`/${webhookUrlPrefix}/rtcEvent`, async (req, res) => {
+      const { query, baseUrl, originalUrl, url, method, statusCode, body } = req
+
+      logger.info({ query, baseUrl, originalUrl, url, method, statusCode, body }, `Webhook Event for rtcEvent Received <-`)
+
+      res.json({ body: req.body })
+
+      const event = req.body
+      const response = await conversationApiFunctionModule.rtcEvent(event, req.nexmo)
+
+    })
+  }
 
   return app;
 }
 
 
 
-async function localDevSetup ({ config }) {
+async function configureNexmoApplication({ config, conversationApiFunctionModule }) {
   const { port, application_id, application_name, nexmo_account,isDev, server_url } = config;
 
-  // if(!isDev)
-  // return Promise.resolve({
-  //   config
-  // });
 
   const ngrok = require('ngrok');
   const {api_key, api_secret } = nexmo_account;
@@ -110,38 +130,38 @@ async function localDevSetup ({ config }) {
     webhooks_url = server_url
   }
 
+  const capabilities = Object.keys(conversationApiFunctionModule).reduce((acc, handlerName) => {
+    const handlerConfig = handlerCapabilitiesConfig[handlerName]
+    if (!handlerConfig)
+      return acc
+    else {
+      if (typeof acc[handlerConfig.group] !== 'object') {
+        acc[handlerConfig.group] = {"webhooks": {}}
+      }
+      acc[handlerConfig.group]["webhooks"][handlerConfig.name] = {
+        "address": `${webhooks_url}/${webhookUrlPrefix}/${handlerName}`,
+        "http_method": "POST"
+      }
+      return acc
+    }
+  }, {})
+  
+  logger.info("start configureNexmoApplication App Registration*", { capabilities: JSON.stringify(capabilities) })
+
   const { data, status } =  await axios({
     method: "PUT",
     url: `https://api.nexmo.com/v2/applications/${application_id}`,
     data: {
       "name": application_name,
-      "capabilities": {
-        // "voice": {
-        //   "webhooks": {
-        //     "answer_url": {
-        //       "address": `${ngrok_url}/ncco`,
-        //       "http_method": "GET"
-        //     },
-        //     "event_url": {
-        //       "address": `${ngrok_url}/voiceEvent`,
-        //       "http_method": "POST"
-        //     }
-        //   }
-        // },
-        "rtc": {
-          "webhooks": {
-            "event_url": {
-              "address": `${webhooks_url}/rtcEvent`,
-              "http_method": "POST"
-            }
-          }
-        }
-      }
+      capabilities
     },
     headers: { 'Authorization': `basic ${dev_api_token}` }
-  })
+  }).catch(err => {
+    logger.error("configureNexmoApplication App Registration Error", { err: JSON.stringify(err.response.data, '  ', '  ')});
+    throw err;
+  } )
   
-  logger.info("localDevSetup App Registration*", { data, status, capabilities: data.capabilities })
+  logger.info("configureNexmoApplication App Registration*", { data, status, capabilities: data.capabilities })
       
   return {
     config: {
@@ -207,6 +227,8 @@ async function bindLvnToApp({phone_number, application_id, api_key, api_secret})
 function startServer(conversationApiFunctionModule) {
   dotenv.config();
 
+  // const allowedModuleMethods = ['route', ]
+
   const emptyEnvs = checkEnvVars();
   if (emptyEnvs.length) {
     logger.error(`you need to configure the following vars`, emptyEnvs)
@@ -216,9 +238,10 @@ function startServer(conversationApiFunctionModule) {
   const staticConfig = getStaticConfig(process.env)
   const {phone_number, application_id, nexmo_account} = staticConfig;
   const {api_key, api_secret} = nexmo_account;
+  
   return Promise.resolve()
     .then(() => bindLvnToApp({phone_number, application_id, api_key, api_secret}))
-    .then(() => localDevSetup({ config: staticConfig }))
+    .then(() => configureNexmoApplication({ config: staticConfig, conversationApiFunctionModule }))
     .then(({ config }) => {
       const app = createExpressApp(config, conversationApiFunctionModule)
       return { config, app }
