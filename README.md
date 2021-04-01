@@ -108,6 +108,14 @@ conversation-api-function run .
 
   description: a very ugly react interface (genereated using react-create-app) for debuging ip calls. (aka calls from your browser). There's also simple login/subscribe mechanism.
 
+- **NCCO talk action - hello world**
+
+  git_repo: https://github.com/jurgob/capi-fn_ncco_hello_world
+
+  description: NCCO stands for Nexmo Call Control Object. Is an easy way to script your calls
+
+
+
 
 ## Use a Real Redis
 

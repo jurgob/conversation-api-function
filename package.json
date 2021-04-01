@@ -27,20 +27,20 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "axios": "^0.19.0",
-    "bunyan": "^1.8.12",
+    "axios": "^0.19.2",
+    "bunyan": "^1.8.15",
     "cors": "^2.8.5",
-    "dotenv": "^8.0.0",
+    "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
-    "ngrok": "^3.2.5",
+    "ngrok": "^3.4.1",
     "nodejs-base64": "^1.0.3",
-    "open": "^7.3.0",
-    "redis": "^3.0.2",
+    "open": "^7.4.2",
+    "redis": "^3.1.0",
     "redis-mock": "^0.54.0",
     "shelljs": "^0.8.4",
-    "uuid": "^8.3.1",
-    "yargs": "^16.1.0"
+    "uuid": "^8.3.2",
+    "yargs": "^16.2.0"
   },
   "devDependencies": {
     "jest": "^26.6.3"
