@@ -44,7 +44,8 @@ function createExpressApp(config, conversationApiFunctionModule) {
       try {
         const token = generateBEToken({ config});
         request.headers = {
-          'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${token}`,
+          "Content-Type": "application/json"
         }
         logger.info({request}, "CSClient request -> ")
         const axiosResponse = await axios(request)
