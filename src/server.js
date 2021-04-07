@@ -116,8 +116,7 @@ function createExpressApp(config, conversationApiFunctionModule) {
 async function configureNexmoApplication({ config, conversationApiFunctionModule }) {
   const { port, application_id, application_name, nexmo_account,isDev, server_url } = config;
 
-
-  const ngrok = require('ngrok');
+  const localtunnel = require('localtunnel');
   const {api_key, api_secret } = nexmo_account;
   const dev_api_token = base64encode(`${api_key}:${api_secret}`)
   logger.info("start application registration")
@@ -125,8 +124,18 @@ async function configureNexmoApplication({ config, conversationApiFunctionModule
   let webhooks_url = server_url 
 
   if (!server_url){
-    webhooks_url = await ngrok.connect(port)
-    logger.info("ngrok spinned up locally", { ngrok_url: webhooks_url })
+    const localtunnelConfig = {
+      port,
+      subdomain: "cane"
+    }
+    logger.info("localtunnelRes spinup", { localtunnelConfig})
+    localtunnelRes = await localtunnel(localtunnelConfig)
+      .catch(err => {
+        logger.info("localtunnelRes error", { err })
+      })
+    logger.info("localtunnelRes after", { localtunnelRes })
+    webhooks_url = localtunnelRes.url
+    logger.info("localtunnel spinned up locally", { localtunnel_url: webhooks_url })
   } else {
     webhooks_url = server_url
   }
