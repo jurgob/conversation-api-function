@@ -125,8 +125,7 @@ async function configureNexmoApplication({ config, conversationApiFunctionModule
 
   if (!server_url){
     const localtunnelConfig = {
-      port,
-      subdomain: "cane"
+      port
     }
     logger.info("localtunnelRes spinup", { localtunnelConfig})
     localtunnelRes = await localtunnel(localtunnelConfig)
