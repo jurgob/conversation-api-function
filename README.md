@@ -21,7 +21,7 @@ To make this app running, you need
 ### install node 14+
 suggested way to install node is via nvm (https://github.com/nvm-sh/nvm/pulls). so: 
 
-```  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.0/install.sh | bash ```
+```  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash  ```
 
 then run: 
 
