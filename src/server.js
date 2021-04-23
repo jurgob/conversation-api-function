@@ -75,7 +75,8 @@ function createExpressApp(config, conversationApiFunctionModule) {
       generateUserToken: (username) => generateUserToken({ config, user_name: username }),
       logger,
       csClient,
-      storageClient
+      storageClient,
+      config
     }
     next()  
   })
