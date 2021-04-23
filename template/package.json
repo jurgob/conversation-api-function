@@ -12,6 +12,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "conversation-api-function": "0.0.14"
+    "conversation-api-function": "0.0.15"
   }
 }
