@@ -120,6 +120,32 @@ conversation-api-function run .
 
   description: Simple Vonage Voice API demo that connects to a websocket endpoint and echoes audio back to caller
 
+  tags: ncco, phone-call, pstn, websocket-call, text-to-speech
+
+- **Conversations API And facebook messages**
+
+  git_repo: https://github.com/bilalkabat/conversation-messages-inbound-example
+
+  description: Let your customer write a message to your facebook page and store them in conversation api
+
+  tags: conversataion-api, messages-api, facebook-messages, ip-messages,  
+
+- **Hangup incomming phone calls but send back an SMS**
+
+  git_repo: https://github.com/jurgob/capi-fn-hangup-call-and-send-messages
+
+  description: every phone called received to your LVN are gonna automatically hanged up, but the caller will receive 
+
+  tags: conversataion-api, phone-call, pstn, custom-data, text-to-speech
+
+- **Phone call authenication for IP calls** 
+
+  git_repo: https://github.com/jurgob/capi-fn-pstn-call-authentication
+
+  description: someone is calling your nexmo number (LVN), he will be asked to say his/her name, The agent on the browser will se the incomming call and the name of the caller.
+
+  tags: conversataion-service, phone call, pstn, custom-data, text-to-speech
+
 ## Use a Real Redis
 
 by default the storage client is saving your data in-memory, so every time you restart you loose al your data. 
