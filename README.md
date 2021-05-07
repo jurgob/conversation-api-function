@@ -114,6 +114,12 @@ conversation-api-function run .
 
   description: NCCO stands for Nexmo Call Control Object. Is an easy way to script your calls
 
+- **Websocket server - echo your voice**
+
+  git_repo: https://github.com/jurgob/websocket-echo-voice
+
+  description: Call an LVN and hear your voice echoed by a websocket
+
 
 
 
