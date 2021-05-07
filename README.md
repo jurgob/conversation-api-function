@@ -114,8 +114,11 @@ conversation-api-function run .
 
   description: NCCO stands for Nexmo Call Control Object. Is an easy way to script your calls
 
+- **NCCO websocket echo repeat**
 
+  git_repo: https://github.com/dimitrisniras/websocket-echo-repeat
 
+  description: Simple Vonage Voice API demo that connects to a websocket endpoint and echoes audio back to caller
 
 ## Use a Real Redis
 
