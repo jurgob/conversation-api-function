@@ -109,6 +109,19 @@ function createExpressApp(config, conversationApiFunctionModule) {
     })
   }
 
+  // application hanler register websocket listener (in case of websocket NCCO) 
+  if (typeof conversationApiFunctionModule.websocketMessage === 'function'){
+    const expressWs = require('express-ws')(app);
+    expressWs.getWss().on('connection', function (ws) {
+      logger.info({ ws }, `Websocket connection is open`)
+    });
+
+    // websocket middleware
+    app.ws('/socket', (ws, req) => {
+      conversationApiFunctionModule.websocketMessage(ws);
+    });
+  }
+
   return app;
 }
 
