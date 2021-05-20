@@ -146,10 +146,16 @@ conversation-api-function run .
 
   tags: conversataion-service, phone call, pstn, custom-data, text-to-speech
   
-- **Record a leg**
-  git_repo: https://github.com/jurgob/capi-fn_record_leg
+- **Record a leg or a conversation**
+  git_repo (example 1, record by leg): https://github.com/jurgob/capi-fn_record_leg
+  git_repo (example 2, record by conversation): https://github.com/JohnPeters7116/capi-fn_record_conversation
+
   
-  description: the call in conversations follow the MCU model (https://bloggeek.me/webrtc-multiparty-video-alternatives/).  In a nutshell, there's a mixer (in our case the conversations) where every leg (aka every call partecipant) are mixed togheter. If you want to record the call from a leg point of view, that's the example that show how to do it.
+  description: the call in conversations follow the MCU model (https://bloggeek.me/webrtc-multiparty-video-alternatives/).  In a nutshell, there's a mixer (in our case the conversations) where every leg (aka every call partecipant) are mixed togheter. 
+If you want to record the call from a leg point of view, that's the example 1 is gonna show how to do it. if you are interested in record all the leg, then check the example 2. 
+question: what 's the difference between recording a leg or a converstion?. Immagine leg a is earmuffing leg b. in the leg recording, you will not have the record of the leg b, while in the conversaion record you will have both the legs in the recoring
+
+
    
   
 
