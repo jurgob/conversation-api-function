@@ -147,7 +147,9 @@ conversation-api-function run .
   tags: conversataion-service, phone call, pstn, custom-data, text-to-speech
   
 - **Record a leg or a conversation**
+
   git_repo (example 1, record by leg): https://github.com/jurgob/capi-fn_record_leg
+  
   git_repo (example 2, record by conversation): https://github.com/JohnPeters7116/capi-fn_record_conversation
 
   
