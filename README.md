@@ -138,7 +138,7 @@ conversation-api-function run .
 
   tags: conversataion-api, phone-call, pstn, custom-data, text-to-speech
 
-- **Phone call authenication for IP calls** 
+- **Phone call authenication for IP calls using conversation custom data** 
 
   git_repo: https://github.com/jurgob/capi-fn-pstn-call-authentication
 
