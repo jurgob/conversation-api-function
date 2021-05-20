@@ -145,6 +145,13 @@ conversation-api-function run .
   description: someone is calling your nexmo number (LVN), he will be asked to say his/her name, The agent on the browser will se the incomming call and the name of the caller.
 
   tags: conversataion-service, phone call, pstn, custom-data, text-to-speech
+  
+- **Record a leg**
+  git_repo: https://github.com/jurgob/capi-fn_record_leg
+  
+  description: the call in conversations follow the MCU model (https://bloggeek.me/webrtc-multiparty-video-alternatives/).  In a nutshell, there's a mixer (in our case the conversations) where every leg (aka every call partecipant) are mixed togheter. If you want to record the call from a leg point of view, that's the example that show how to do it.
+   
+  
 
 ## Use a Real Redis
 
