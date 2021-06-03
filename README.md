@@ -121,6 +121,14 @@ conversation-api-function run .
   description: Simple Vonage Voice API demo that connects to a websocket endpoint and echoes audio back to caller
 
   tags: ncco, phone-call, pstn, websocket-call, text-to-speech
+  
+ - **NCCO input of DTMF and Speech **
+
+  git_repo: https://github.com/JohnPeters7116/capi-fn_ncco_dtmf
+
+  description: Simple Vonage Voice API demo that takes dtmf input from customer and sends to customers event url
+
+  tags: ncco, phone-call, pstn, dtmf, speech, text-to-speech
 
 - **Conversations API And facebook messages**
 
