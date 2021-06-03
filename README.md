@@ -122,7 +122,7 @@ conversation-api-function run .
 
   tags: ncco, phone-call, pstn, websocket-call, text-to-speech
   
- - **NCCO input of DTMF and Speech **
+- **NCCO input of DTMF and Speech**
 
   git_repo: https://github.com/JohnPeters7116/capi-fn_ncco_dtmf
 
