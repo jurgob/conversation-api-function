@@ -1,4 +1,30 @@
 /**
+
+what's in this file: 
+In this file you specify a JS module with some callbacks. Basically those callbacks get calls when you receive an event from the vonage backend. There's also a 
+special route function that is called on your conversation function start up allowing your to expose new local http endpoint
+
+the event you can interract here are the same you can specify in your application: https://developer.nexmo.com/application/overview
+
+event callbacks for rtc: 
+ - rtcEvent (event, context)
+
+event callbacks for anything else (those one are just standard express middleware access req.nexmo to get the context): 
+
+voice callbacks 
+ - voiceEvent (req, res, next)
+ - voiceAnswer (req, res, next)
+
+messages callbacks (if you specifiy one of thise, you need to declare both of them, those one are just standard express middleware access req.nexmo ):
+- messagesInbound (req, res, next)
+- messagesStatus (req, res, next)
+
+
+route(app) // app is an express app
+
+
+
+
 nexmo context: 
 you can find this as the second parameter of rtcEvent funciton or as part or the request in req.nexmo in every request received by the handler 
 you specify in the route function.
