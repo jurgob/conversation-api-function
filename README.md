@@ -67,6 +67,14 @@ if you install bunyan ( ```npm install -g bunyan ``` ) then you can run:
 
 p.s. bunyan is producing standard json, so you can also use standard unix tools like jq to format the logs: `tail -f vapi_hello_world.log | jq`
 
+
+## how to write a function
+
+when you start a new project, there's documentation in the example. If you are curious, take.a look here:
+
+https://github.com/jurgob/conversation-api-function/blob/main/template/index.js
+
+
 ## Examples
 
 Once you have configured conversation-api-functions, you can run every project without configuring this tools again. 
