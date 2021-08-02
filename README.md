@@ -167,7 +167,6 @@ conversation-api-function run .
   git_repo (example 1, record by leg): https://github.com/jurgob/capi-fn_record_leg
   
   git_repo (example 2, record by conversation): https://github.com/JohnPeters7116/capi-fn_record_conversation
-
   
   description: the call in conversations follow the MCU model (https://bloggeek.me/webrtc-multiparty-video-alternatives/).  In a nutshell, there's a mixer (in our case the conversations) where every leg (aka every call partecipant) are mixed togheter. 
 If you want to record the call from a leg point of view, that's the example 1 is gonna show how to do it. if you are interested in record all the leg, then check the example 2. 
@@ -196,6 +195,19 @@ question: what 's the difference between recording a leg or a converstion?. Imma
   description: Perform an outbound PSTN call to a number, using the JS SDK.
 
   tags: conversataion-service, phone call, pstn, client sdks
+
+- **Websocket audio phone**
+
+  git_repo:  https://github.com/jurgob/wsphone
+
+  description: receive a phone call and respond using your computer microphone via websocket.
+
+- **outbound call with NCCO
+
+  git_repo: https://github.com/jurgob/phone_outbound_call_ncco
+
+  description: call a phone number from your application (you could as instance do an automatic phone marketing campaign with this) .
+
 
 ## Use a Real Redis
 
