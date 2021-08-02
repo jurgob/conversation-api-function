@@ -172,6 +172,29 @@ conversation-api-function run .
 If you want to record the call from a leg point of view, that's the example 1 is gonna show how to do it. if you are interested in record all the leg, then check the example 2. 
 question: what 's the difference between recording a leg or a converstion?. Immagine leg a is earmuffing leg b. in the leg recording, you will not have the record of the leg b, while in the conversaion record you will have both the legs in the recoring
 
+- **Conversations API And facebook messages with events using Vonage Client JS SDK**
+
+  git_repo: https://github.com/dimitrisniras/inbound-message-chat
+
+  description: Let your customer write a message to your facebook page and store them in conversation api and see all the events that are coming through.
+
+  tags: conversataion-api, messages-api, facebook-messages, ip-messages
+
+- **Inbound PSTN call using Vonage Client JS SDK**
+
+  git_repo: https://github.com/dimitrisniras/inbound-call-example
+
+  description: Perform an inbound PSTN call, calling your nexmo number (LVN) and then connect to an `app` user, transmitting audio and using the JS SDK.
+
+  tags: conversataion-service, phone call, pstn, client sdks
+
+- **Outbound PSTN call using Vonage Client JS SDK**
+
+  git_repo: https://github.com/dimitrisniras/outbound-call-example
+
+  description: Perform an outbound PSTN call to a number, using the JS SDK.
+
+  tags: conversataion-service, phone call, pstn, client sdks
 
 - **Websocket audio phone**
 
@@ -185,8 +208,6 @@ question: what 's the difference between recording a leg or a converstion?. Imma
 
   description: call a phone number from your application (you could as instance do an automatic phone marketing campaign with this) .
 
-   
-  
 
 ## Use a Real Redis
 
