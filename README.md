@@ -202,7 +202,7 @@ question: what 's the difference between recording a leg or a converstion?. Imma
 
   description: receive a phone call and respond using your computer microphone via websocket.
 
-- **outbound call with NCCO
+- **Outbound phone call with NCCO**
 
   git_repo: https://github.com/jurgob/phone_outbound_call_ncco
 
