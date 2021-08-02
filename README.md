@@ -175,9 +175,15 @@ question: what 's the difference between recording a leg or a converstion?. Imma
 
 - **Websocket audio phone**
 
-git_repo:  https://github.com/jurgob/wsphone
+  git_repo:  https://github.com/jurgob/wsphone
 
-description: receive a phone call and respond using your computer microphone via websocket.
+  description: receive a phone call and respond using your computer microphone via websocket.
+
+- **outbound call with NCCO
+
+  git_repo: https://github.com/jurgob/phone_outbound_call_ncco
+
+  description: call a phone number from your application (you could as instance do an automatic phone marketing campaign with this) .
 
    
   
