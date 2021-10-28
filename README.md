@@ -138,13 +138,21 @@ conversation-api-function run .
 
   tags: ncco, phone-call, pstn, dtmf, speech, text-to-speech
 
-- **Conversations API And facebook messages**
+- **Conversations API And facebook messages inbound**
 
   git_repo: https://github.com/bilalkabat/conversation-messages-inbound-example
 
   description: Let your customer write a message to your facebook page and store them in conversation api
 
   tags: conversataion-api, messages-api, facebook-messages, ip-messages,  
+
+- **
+  
+  git_repo: https://github.com/andradaioanabogoi/conversation-messages-outbound-example
+
+  description: Store inbound facebook (and whatsapp, viber, sms message) in a conversation. Also respond to them via api (aka outbound messages)
+
+  tags: conversataion-api, messages-api, facebook-messages, ip-messages, whatsapp, facebook messenger, sms, viber
 
 - **Hangup incomming phone calls but send back an SMS**
 
