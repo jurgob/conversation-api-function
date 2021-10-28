@@ -146,7 +146,7 @@ conversation-api-function run .
 
   tags: conversataion-api, messages-api, facebook-messages, ip-messages,  
 
-- **
+- **Conversations API, facebook messages and SMS, both inbound and outbound**
   
   git_repo: https://github.com/andradaioanabogoi/conversation-messages-outbound-example
 
