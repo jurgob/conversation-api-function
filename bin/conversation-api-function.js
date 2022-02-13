@@ -2,7 +2,7 @@
 
 const nodeVer = process.versions.node.split('.')
 const supportdVersion = '13.14.0'.split('.')
-if (nodeVer[0] < supportdVersion[0] || nodeVer[1] < supportdVersion[1] ) {
+if (nodeVer[0] < supportdVersion[0] || ( nodeVer[0] === supportdVersion[0] && nodeVer[1] < supportdVersion[1] ) ) {
     console.log("Unsupported node version. version required:  >=v13.14.0. Please update your node installation")
     process.exit(1)
 }
