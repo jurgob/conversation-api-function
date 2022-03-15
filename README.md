@@ -21,13 +21,24 @@ To make this app running, you need
 ### install node 14+
 suggested way to install node is via nvm (https://github.com/nvm-sh/nvm/pulls). so: 
 
-```  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash  ```
+#### install nvm
+if you have brew install, just run 
 
-then run: 
+```brew install nvm ```
+
+if not, then 
+```  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash ```
+
+(read here for more details: https://github.com/nvm-sh/nvm)
+
+
+### install node with nvm
+now that nvm is installed, just run: 
 
 ``` nvm install 14 ```
 
-# install
+
+# install the tool
 
 ```npm install -g conversation-api-function ```
 
@@ -52,6 +63,23 @@ now call you lvn, you should hear an "hello world" mesage
 
 
 open the following file ``` my_capi_fn/index.js ``` for more info
+
+## run it part 2, make your life easier
+
+you can now run every example you find in the `examples` section without the need to configure the app again. 
+
+you can also run the app in an alternative way: 
+
+```
+cd my_capi_fn
+npm install
+npm run
+```
+
+in this way you are gonna install the dependencies and run it without the need to use the global tool
+
+
+
 
 
 ## further docs:
