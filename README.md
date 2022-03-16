@@ -273,7 +273,7 @@ CONV_API_FUNC_REDIS_URL="redis://localhost:6379"
 
 From the project directory, run the following command: 
 
-```conversation-api-function config-new . -a API_KEY -s API_SECRET -l LVN_LIVE```
+```conversation-api-function deploy-new . -a API_KEY -s API_SECRET -l LVN_LIVE```
 
 this is gonna create a `.env.prod` file with the credential to go live
 
