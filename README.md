@@ -270,12 +270,18 @@ CONV_API_FUNC_REDIS_URL="redis://localhost:6379"
 ## deploy in production
 
 ### create deployment credentials
-0) from the project directory, run the following command: 
-```conversation-api-function run .  ```
+
+From the project directory, run the following command: 
+
+```conversation-api-function config-new . -a API_KEY -s API_SECRET -l LVN_LIVE```
 
 this is gonna create a `.env.prod` file with the credential to go live
 
+remember, the LVN_LIVE you are using here should be a differnt one then the one you have used in prod. If you use the same, you risk to break your prod application. 
+
 ### deploy in heroku. 
+After you have create the `.env.prod` file as described above, follow those steps:
+
 1) after you have created a deployment credentials, for the first thing you need to init your project on git: 
 ```
 git init
