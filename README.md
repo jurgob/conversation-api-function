@@ -244,6 +244,14 @@ question: what 's the difference between recording a leg or a converstion?. Imma
 
   description: call a phone number from your application (you could as instance do an automatic phone marketing campaign with this) .
 
+- **Transcribe a conversation**
+  
+  git_repo (example 1, transcribe by leg): <https://github.com/dimitrisniras/record-leg-transcription>
+
+  git_repo (example 2, transcribe by conversation): <https://github.com/dimitrisniras/record-conversation-transcription>
+  
+  description: Perform an inbound PSTN call, calling your nexmo number (LVN). The call (or a single leg) will be recorded and transcribed.
+
 
 ## Use a Real Redis
 
