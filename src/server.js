@@ -213,8 +213,8 @@ function listenServer({ app, config, conversationApiFunctionModule}) {
   const { port } = config;
   return new Promise((resolve) => {
     const server = app.listen(port, () => resolve({ config }));
-    if (conversationApiFunctionModule.serverWapper && typeof conversationApiFunctionModule.serverWapper == "function") {
-      return conversationApiFunctionModule.serverWapper(server, config);
+    if (conversationApiFunctionModule.serverWrapper && typeof conversationApiFunctionModule.serverWrapper == "function") {
+      return conversationApiFunctionModule.serverWrapper(server, config);
     } 
     return server;
   })
