@@ -209,10 +209,14 @@ function checkEnvVars(){
 }
 
 
-function listenServer({ app, config }) {
+function listenServer({ app, config, conversationApiFunctionModule}) {
   const { port } = config;
   return new Promise((resolve) => {
-    return app.listen(port, () => resolve({ config }))
+    const server = app.listen(port, () => resolve({ config }));
+    if (conversationApiFunctionModule.serverWapper && typeof conversationApiFunctionModule.serverWapper == "function") {
+      return conversationApiFunctionModule.serverWapper(server, config);
+    } 
+    return server;
   })
 }
 
@@ -256,7 +260,7 @@ function startServer(conversationApiFunctionModule) {
       const app = createExpressApp(config, conversationApiFunctionModule)
       return { config, app }
     })
-    .then(({ app, config }) => listenServer({ app, config }))
+    .then(({ app, config }) => listenServer({ app, config, conversationApiFunctionModule }))
     .then(({ config }) => {
       const { port } = config;
       logger.info(`config`, config)
