@@ -165,6 +165,14 @@ conversation-api-function run .
   description: Simple Vonage Voice API demo that takes dtmf input from customer and sends to customers event url
 
   tags: ncco, phone-call, pstn, dtmf, speech, text-to-speech
+  
+- **IVR to get Date or Weather info via DTMF**
+  
+  git_repo: https://github.com/salvodicara/ivr_weather_or_date
+  
+  description: An IVR example asking for user interaction to retrieve date or weather information
+  
+  tags: ncco, phone-call, pstn, dtmf, speech, text-to-speech, ivr
 
 - **Conversations API And facebook messages inbound**
 
