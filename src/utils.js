@@ -5,70 +5,62 @@ const { base64encode } = require('nodejs-base64');
 const fs = require('fs').promises;
 
 
-
 function generateToken({ private_key, application_id, acl, sub }) {
+  const currentTime = new Date().getTime();
+  const payload = {
+    iat: currentTime - 3,
+    exp: currentTime + 60 * 60 * 1000,
+    application_id: application_id,
+    jti: currentTime
+  };
+  if (acl) {
+    payload["acl"] = acl;
+  }
   if (!acl) {
-    acl = {
+    payload["acl"] = {
       "paths": {
         "/**": {}
       }
     }
   }
-
-
-  const now = (Date.now() / 1000) 
-  const ext = now + (((60 * 60)  * 60 ) * 24 )
-  const props = {
-    "iat": now,
-    "nbf": now,
-    "exp": ext,
-    "jti": now,
-    application_id,
-    acl,
-    sub
+  if (sub) {
+    payload["sub"] = sub;
   }
 
-
-
-  return jwt.sign(
-    props,
-    {
-      key: private_key,
-    },
-    {
-      algorithm: 'RS256',
-    }
-  )
+  return jwt.sign(payload, private_key, { algorithm: "RS256" });
 }
+
 
 function generateUserToken({ config, user_name }) {
   const { private_key, application_id } = config;
-  return generateToken({
+  const userToken = generateToken({
     private_key,
     application_id,
     sub: user_name
   })
+  return userToken
 }
 
 function generateBEToken({ config }) {
   const { private_key, application_id } = config;
-  return generateToken({
+  const token = generateToken({
     private_key,
     application_id
   })
+  return token
 }
 
 
 function getStaticConfig(env) {
   const isDev = !env.NODE_ENV
-  if(isDev)
+  if (isDev)
     dotenv.config();
   const { CONV_API_FUNC_PRIVATE_KEY, CONV_API_FUNC_APPLICATION_ID, CONV_API_FUNC_APPLICATION_NAME, CONV_API_FUNC_PHONE_NUMBER, CONV_API_FUNC_SERVER_URL, CONV_API_FUNC_PORT, CONV_API_FUNC_REDIS_URL } = env
-  
+
   let port = 5001
   if (CONV_API_FUNC_PORT) {
     port = CONV_API_FUNC_PORT
-  } else if(process.env.PORT) {
+  } else if (process.env.PORT) {
     port = process.env.PORT
   }
 
@@ -79,14 +71,14 @@ function getStaticConfig(env) {
     server_url: CONV_API_FUNC_SERVER_URL,
     private_key: CONV_API_FUNC_PRIVATE_KEY,
     application_id: CONV_API_FUNC_APPLICATION_ID,
-    application_name:CONV_API_FUNC_APPLICATION_NAME,
+    application_name: CONV_API_FUNC_APPLICATION_NAME,
     redis_url: CONV_API_FUNC_REDIS_URL
   }
   const { CONV_API_FUNC_API_KEY, CONV_API_FUNC_API_SECRET } = env
   config = {
     ...config,
     nexmo_account: {
-      api_key:CONV_API_FUNC_API_KEY,
+      api_key: CONV_API_FUNC_API_KEY,
       api_secret: CONV_API_FUNC_API_SECRET
     }
   }
@@ -145,8 +137,8 @@ function createAppAndEnv(cliParams, fileName) {
 }
 
 module.exports = {
-	generateBEToken,
-	generateUserToken,
+  generateBEToken,
+  generateUserToken,
   getStaticConfig,
   createApp,
   createAppAndEnv
