@@ -16,7 +16,7 @@ function generateToken({ private_key, application_id, acl, sub }) {
   }
 
 
-  const now = (Date.now() / 1000) 
+  const now = Math.floor(Date.now() / 1000) 
   const ext = now + (((60 * 60)  * 60 ) * 24 )
   const props = {
     "iat": now,
